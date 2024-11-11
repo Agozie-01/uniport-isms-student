@@ -1,40 +1,31 @@
 #!/usr/bin/env python
-"""Django's command-line utility for administrative tasks."""
+"""Django's command-line utility for administrative tasks with pywebview for a desktop window."""
 import os
 import sys
-import webbrowser
 import threading
 import time
+import webview  # pywebview to create a desktop-like window for the Django app
+from django.core.management import execute_from_command_line
 
-def open_browser():
-    # Wait briefly to ensure the server has started before attempting to open the browser
-    time.sleep(1)  # Adjust delay as needed for the server to be ready
-    webbrowser.open("http://127.0.0.1:12000")
+def start_django_server():
+    """Start Django server."""
+    sys.argv = [sys.argv[0], "runserver", "127.0.0.1:12000", "--noreload"]
+    execute_from_command_line(sys.argv)
 
 def main():
-    """Run administrative tasks."""
+    """Run Django administrative tasks and launch the server in a desktop window."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'isms_admin.settings')
 
-    try:
-        from django.core.management import execute_from_command_line
-    except ImportError as exc:
-        raise ImportError(
-            "Couldn't import Django. Are you sure it's installed and "
-            "available on your PYTHONPATH environment variable? Did you "
-            "forget to activate a virtual environment?"
-        ) from exc
+    # Start Django server in a background thread
+    server_thread = threading.Thread(target=start_django_server, daemon=True)
+    server_thread.start()
 
-    # Default to running server on 0.0.0.0:12000 if no arguments provided
-    if len(sys.argv) == 1:
-        sys.argv += ["runserver", "0.0.0.0:12000"]
+    # Wait briefly to ensure server has started before launching the window
+    time.sleep(2)
 
-    # If running server, add '--noreload' to avoid autoreload
-    if 'runserver' in sys.argv:
-        sys.argv.append('--noreload')
-        # Start a thread to open the browser so it does not block the server from starting
-        threading.Thread(target=open_browser, daemon=True).start()
-    
-    execute_from_command_line(sys.argv)
+    # Open the application in a PyWebView window; when this window is closed, the app exits
+    webview.create_window("ISMSAdmin", "http://127.0.0.1:12000")
+    webview.start()  # Blocks until the window is closed, then exits
 
 if __name__ == '__main__':
     main()
