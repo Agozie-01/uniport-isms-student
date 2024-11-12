@@ -14,7 +14,7 @@ def start_django_server():
 
 def main():
     """Run Django administrative tasks and launch the server in a desktop window."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'isms_admin.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'isms.settings')
 
     # Start Django server in a background thread
     server_thread = threading.Thread(target=start_django_server, daemon=True)
@@ -24,7 +24,7 @@ def main():
     time.sleep(1)  # Adjust this delay if needed for server readiness
 
     # Open the application in a PyWebView window; when this window is closed, the app exits
-    webview.create_window("ISMSAdmin", "http://127.0.0.1:12000")
+    webview.create_window("ISMS", "http://127.0.0.1:12000")
     webview.start()  # Blocks until the window is closed, then exits
 
 if __name__ == '__main__':
