@@ -12,6 +12,21 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+import pymysql
+
+# Initialize pymysql as MySQLdb
+pymysql.install_as_MySQLdb()
+
+# Define the base directory
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Construct the path to the .env file
+dotenv_path = os.path.join(BASE_DIR, '.env')
+
+# Load the .env file
+load_dotenv(dotenv_path)
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -79,11 +94,14 @@ WSGI_APPLICATION = 'isms_admin.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': os.getenv('DB_ENGINE'),   # Fetch the engine from .env
+        'NAME': os.getenv('DB_NAME'),       # Fetch the database name from .env
+        'USER': os.getenv('DB_USER'),       # Fetch the user from .env
+        'PASSWORD': os.getenv('DB_PASSWORD', ''),  # Optional: default to empty if not set
+        'HOST': os.getenv('DB_HOST'),       # Fetch the host from .env
+        'PORT': os.getenv('DB_PORT', '3306'),  # Default to 3306 if not set
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -119,7 +137,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",  # This points to the static folder in the root directory
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
