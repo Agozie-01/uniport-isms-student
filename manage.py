@@ -21,7 +21,7 @@ def main():
     server_thread.start()
 
     # Wait briefly to ensure server has started before launching the window
-    time.sleep(2)
+    time.sleep(1)  # Adjust this delay if needed for server readiness
 
     # Open the application in a PyWebView window; when this window is closed, the app exits
     webview.create_window("ISMSAdmin", "http://127.0.0.1:12000")
