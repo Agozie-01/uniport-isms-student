@@ -1,8 +1,3 @@
-from django.shortcuts import render
-
-from adminapp.models import Test
-
-def home(request):
-    greeting = "Good morning friends"
-    data = Test.objects.all()
-    return render(request, 'index.html', {"greeting": greeting, "data": data})
+# main_app/views.py
+from .auth_views import login_view
+from .dashboard_views import dashboard_view

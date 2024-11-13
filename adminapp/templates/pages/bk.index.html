@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Home - My Site{% endblock %}
+
+{% block content %}
+    <h1>Something New: {{greeting}}</h1>
+    <h1>Good to see this page displaying in the exe.</h1>
+
+    <img src="{% static 'img/logo.png' %}" alt="Uniport" />
+
+    <ul>
+        {% for fruit in data %}
+            <li>{{ fruit.name }} - {{ fruit.color }}</li>
+        {% endfor %}
+    </ul>
+
+    <div x-data="fetchDataComponent" x-init="fetchData()">
+  
+        <button @click="fetchData" :disabled="loading">
+          <span x-show="!loading">Fetch Data</span>
+          <span x-show="loading">Loading...</span>
+        </button>
+        
+        <div x-show="loading">
+          <p>Loading data...</p>
+        </div>
+      
+        <div x-show="error" class="error">
+          <p x-text="error"></p>
+        </div>
+      
+        <div x-show="data" class="data">
+          <h2>Fetched Data:</h2>
+          <pre x-text="JSON.stringify(data, null, 2)"></pre>
+        </div>
+        
+      </div>
+  
+    
+{% endblock %}
+

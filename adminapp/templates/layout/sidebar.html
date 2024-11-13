@@ -1,0 +1,33 @@
+{% load static %}
+
+<nav id="sidebar" class="sidebar js-sidebar">
+    <div class="sidebar-content js-simplebar">
+        <a class="sidebar-brand" href="{% url 'dashboard_home' %}">
+            <img src="{% static 'img/logo.png' %}" alt="Logo" style="max-width: 64px; margin-left: 3.5rem" />
+        </a>
+
+        <ul class="sidebar-nav">
+            <!-- <li class="sidebar-header">
+                Dashboard
+            </li>
+ -->
+            <li class="sidebar-item active">
+                <a class="sidebar-link" href="{% url 'dashboard_home' %}">
+                    <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Dashboard</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-cta">
+            <div class="sidebar-cta-content">
+                <strong class="d-inline-block mb-2">Peter</strong>
+                <div class="mb-3 text-sm">
+                    Staff ID: 12345
+                </div>
+                <div class="d-grid">
+                    <a href="#" class="btn btn-primary">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>

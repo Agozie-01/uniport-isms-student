@@ -3,5 +3,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.home, name='home'),  # Directs to the homepage view
+    path('', views.login_view, name='login'),
+    path('dashboard', views.dashboard_view, name='dashboard_home'),
 ]
