@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Dashboard Overview{% endblock %}
+{% block title %}Overview{% endblock %}
 
 {% block page_title %}
 <!-- Page Title with Animation -->
-<h1 class="h3 mb-3 animate__animated animate__fadeIn"><strong>Dashboard</strong> Overview</h1>
+<h1 class="h3 mb-3 animate__animated animate__fadeIn"><strong>Overview</strong></h1>
 {% endblock %}
 
 {% block content %}
@@ -22,7 +22,7 @@
                     </div>
                     <div class="col mt-2">
                         <h5 class="card-title">Total Students</h5>
-                        <h4 class="mt-1">350</h4>
+                        <h4 class="mt-1 card-subtitle">350</h4>
                     </div>
                 </div>
             </div>
@@ -41,7 +41,7 @@
                     </div>
                     <div class="col mt-2">
                         <h5 class="card-title">Total Courses</h5>
-                        <h4 class="mt-1">25</h4>
+                        <h4 class="mt-1 card-subtitle">25</h4>
                     </div>
                 </div>
             </div>
@@ -60,14 +60,14 @@
                     </div>
                     <div class="col mt-2">
                         <h5 class="card-title">Average Grade</h5>
-                        <h4 class="mt-1">B+</h4>
+                        <h4 class="mt-1 card-subtitle">B+</h4>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Pending Results Card -->
+    <!-- Total Results Uploaded Card -->
     <div class="col-md-3">
         <div class="card rounded-lg" style="border: none; box-shadow: none;">
             <div class="card-body">
@@ -78,8 +78,8 @@
                         </div>
                     </div>
                     <div class="col mt-2">
-                        <h5 class="card-title">Pending Results</h5>
-                        <h4 class="mt-1">5</h4>
+                        <h5 class="card-title">Results Uploaded</h5>
+                        <h4 class="mt-1 card-subtitle">5</h4>
                     </div>
                 </div>
             </div>
@@ -92,8 +92,10 @@
     <div class="col-md-8">
         <div class="card rounded-lg" style="border: none; box-shadow: none;">
             <div class="card-body">
-                <h5 class="card-title">Course Performance Trend</h5>
-                <canvas id="performanceChart"></canvas>
+                <h5 class="card-title mb-4">Course Performance Trend</h5>
+                <div class="chart">
+                    <canvas id="chartjs-line"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -102,28 +104,14 @@
     <div class="col-md-4">
         <div class="card rounded-lg" style="border: none; box-shadow: none;">
             <div class="card-body">
-                <h5 class="card-title">Recent Activities</h5>
-                <!-- Timeline for Recent Activities -->
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <strong>Course "ECE304" graded</strong> - Grade: <span class="text-success">A</span>
-                    </li>
-                    <li class="list-group-item">
-                        <strong>New results uploaded for "EEE405"</strong>
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Session "2021/2022" results published</strong>
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Grade review requested for "PHY301"</strong>
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Pending results for "MTH101"</strong>
-                    </li>
-                </ul>
+                {% include '../components/recent_activities.html' %}
             </div>
         </div>
     </div>
 </div>
 
+{% endblock %}
+
+{% block custom_scripts %}
+    {% include '../components/performance_chart_script.html' %}
 {% endblock %}

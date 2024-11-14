@@ -1,5 +1,7 @@
 .card {
-    border-radius: 12px;
+    border-radius: 8px;
+    background-color: transparent;
+    border: 2px solid #e8ecf2 !important;
 }
 
 .stat {
@@ -10,4 +12,30 @@
     width: 40px;
     height: 40px;
     justify-content: center;
+}
+
+.card-title {
+    color: #222!important;
+    font-size: .825rem;
+    font-weight: 500;
+}
+
+.card-subtitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #222!important;
+}
+
+.navbar-bg {
+    background: transparent;
+  }
+.navbar {
+    border-bottom: 0;
+    box-shadow: none;
+}
+
+@media (min-width: 992px) {
+    .content {
+      padding: 1rem 3rem 1.5rem;
+    }
 }
