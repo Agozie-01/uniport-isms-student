@@ -1,3 +1,13 @@
-body {
-    background-color: #f5f5f5;
+.card {
+    border-radius: 12px;
+}
+
+.stat {
+    align-items: center;
+    background: #f6faff;
+    border-radius: 50%;
+    display: flex;
+    width: 40px;
+    height: 40px;
+    justify-content: center;
 }
