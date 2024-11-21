@@ -2,6 +2,7 @@
     border-radius: 8px;
     background-color: transparent;
     border: 2px solid #e8ecf2 !important;
+    box-shadow: none !important;
 }
 
 .stat {
@@ -15,7 +16,7 @@
 }
 
 .card-title {
-    color: #222!important;
+    color: #222 !important;
     font-size: .825rem;
     font-weight: 500;
 }
@@ -23,19 +24,40 @@
 .card-subtitle {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #222!important;
+    color: #222 !important;
 }
 
 .navbar-bg {
     background: transparent;
-  }
+}
+
 .navbar {
     border-bottom: 0;
     box-shadow: none;
+    padding: 1rem 3rem;
+}
+
+.form-outline .form-control, .form-control {
+    background: rgba(255, 255, 255, 0.5);
+    border: var(--mdb-border-width) solid var(--mdb-border-color);
+}
+
+.table > :not(caption) > * > * {
+    background-color: rgba(var(--mdb-table-bg), 0.5);
+}
+
+.btn {
+    --mdb-btn-hover-box-shadow: 0;
+    --mdb-btn-active-box-shadow: 0;
+    --mdb-btn-box-shadow: 0;
+}
+
+.btn:hover {
+    --mdb-btn-box-shadow: 0;
 }
 
 @media (min-width: 992px) {
     .content {
-      padding: 1rem 3rem 1.5rem;
+        padding: 1rem 3rem 1.5rem;
     }
 }

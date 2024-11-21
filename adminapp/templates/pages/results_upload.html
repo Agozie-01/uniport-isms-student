@@ -4,17 +4,33 @@
 {% block title %}Upload Results{% endblock %}
 
 {% block page_title %}
-<!-- Apply fade-in animation to page title -->
-<h1 class="h3 mb-3 animate__animated animate__fadeIn"><strong>Upload</strong> Results</h1>
+<!-- Page Title with Animation -->
+<h1 class="h3 mb-4 animate__animated animate__fadeIn"><strong>Upload</strong> Results</h1>
 {% endblock %}
 
 {% block content %}
-<div class="row mb-3 mt-5">
-    <!-- Search and Filters -->
-    <div class="col-12 animate__animated animate__fadeIn">
+<div class="row mb-3">
+    <!-- Search and Filters with Animation -->
+    <div class="col-md-6 animate__animated animate__fadeIn mb-2">
+        <div class="input-group">
+            <div class="form-outline" data-mdb-input-init>
+                <input type="search" id="form1" class="form-control" />
+                <label class="form-label" for="form1">Search</label>
+            </div>
+            <button type="button" class="btn" data-mdb-ripple-init>
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Search and Upload New Results with Animation -->
+<div class="row mb-4">
+    <!-- General Search Field with Animation -->
+    <div class="col-md-8 animate__animated animate__fadeIn">
         <form class="row g-3 align-items-center">
             <!-- Semester Filter -->
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <select class="form-control">
                     <option value="">Filter by Semester</option>
                     <option value="1st">1st Semester</option>
@@ -23,7 +39,7 @@
             </div>
 
             <!-- Session Filter -->
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <select class="form-control">
                     <option value="">Filter by Session</option>
                     <option value="2020/2021">2020/2021</option>
@@ -33,7 +49,7 @@
             </div>
 
             <!-- Grade Filter -->
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <select class="form-control">
                     <option value="">Filter by Grade</option>
                     <option value="A">A</option>
@@ -45,30 +61,22 @@
             </div>
 
             <!-- Search Button -->
-            <div class="col-md-2 text-end">
-                <button type="submit" class="btn btn-primary w-100">Filter</button>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-filter"></i> Filter</button>
             </div>
         </form>
     </div>
-</div>
 
-<!-- Search and Upload New Results -->
-<div class="row mb-4">
-    <!-- General Search Field -->
-    <div class="col-md-6 animate__animated animate__fadeIn">
-        <input type="text" class="form-control" placeholder="Search by keyword">
-    </div>
-
-    <!-- Upload New Results Button with Icon -->
-    <div class="col-md-4 offset-md-2 text-end animate__animated animate__fadeIn">
+    <!-- Upload New Results Button with Animation -->
+    <div class="col-md-4 text-end animate__animated animate__fadeIn">
         <button class="btn btn-success">
             <i class="fas fa-upload"></i> Upload New Results
         </button>
     </div>
 </div>
 
+<!-- Results Table with Animation -->
 <div class="row">
-    <!-- Results Table with fade-in animation -->
     <div class="col-12 animate__animated animate__fadeIn">
         <div class="card">
             <table class="table table-hover my-0">
