@@ -1,5 +1,5 @@
 from django.urls import re_path
-from .views import StudentView, AdminView
+from .views import StudentView, AdminView, DepartmentView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -16,4 +16,8 @@ urlpatterns = [
 
     # Admin endpoints
     re_path(r'^admins/?$', AdminView.as_view(), name='admin_new'),  # Optional trailing slash
+
+    re_path(r'^departments/?$', DepartmentView.as_view(), name='departments'),  # List/Create
+    re_path(r'^departments/(?P<department_id>\d+)/?$', DepartmentView.as_view(), name='department-detail'),  # Retrieve/Update/Delete
+
 ]

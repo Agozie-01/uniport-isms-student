@@ -90,7 +90,7 @@ class AdminSerializer(serializers.ModelSerializer):
         password = validated_data.pop('password', None)
 
         # Apply field-level validations for each field
-        instance = self.run_validators(instance, validated_data)
+        instance = self.apply_field_validations(instance, validated_data)
 
         # Update user fields
         for attr, value in validated_data.items():
@@ -102,7 +102,7 @@ class AdminSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-    def run_validators(self, instance, validated_data):
+    def apply_field_validations(self, instance, validated_data):
         """
         Run field-level validations and apply them for each field.
         """

@@ -1,2 +1,3 @@
-from .student_serializer import StudentSerializer
-from .admin_serializer import AdminSerializer
+from .student import StudentSerializer
+from .admin import AdminSerializer
+from .department import DepartmentSerializer
