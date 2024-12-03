@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template.loader import render_to_string
-from adminapp.models import Test
+from api.models import Test
 
 def login_view(request):
     greeting = "Good morning friends"

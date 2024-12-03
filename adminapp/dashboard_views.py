@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.urls import reverse
-from adminapp.models import Test
+from api.models import Test
 
 def dashboard_home(request):
     # Define the sidebar menu with groups and items
