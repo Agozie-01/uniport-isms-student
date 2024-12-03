@@ -29,7 +29,7 @@ function toastError(message, position, callback) {
     Toastify({
         text: message,
         duration: 3000,
-        newWindow: true,
+        newWindow: false,
         close: true,
         gravity: "top", // `top` or `bottom`
         position: position, // `left`, `center` or `right`

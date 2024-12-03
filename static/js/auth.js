@@ -13,6 +13,8 @@ const loginConstrants = {
  // Handle form submission
  document.getElementById("login-form").onsubmit = async function(event) {
     event.preventDefault(); // Prevent default form submission (page reload)
+    
+    clearErrors(); //Clear old errors
 
     // Retrieve form data
     const formData = new FormData(event.target);
@@ -30,6 +32,10 @@ const loginConstrants = {
         return; // Prevent form submission if validation fails
     }
 
+    // Show the loader when the login button is clicked
+    showLoader("login-loader");
+    disableForm(this.id);
+    
     try {
         const response = await fetch('/api/token', {
           method: 'POST',
@@ -42,6 +48,8 @@ const loginConstrants = {
         if (!response.ok) {
           const errorData = await response.json();
           toastError("Invalid login credentials");
+          hideLoader("login-loader");
+          enableForm(this.id);
         } else {
           const data = await response.json();
          
@@ -50,13 +58,9 @@ const loginConstrants = {
           })
         }
       } catch (error) {
-        console.log(error);
-        Swal.fire({
-          title: 'Error',
-          text: 'Unable to connect to the server',
-          icon: 'error',
-          confirmButtonText: 'Retry'
-        });
+        hideLoader("login-loader");
+        toastError("Login error. Please try again later.");
+        enableForm(this.id);
       }
       
 };
