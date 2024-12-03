@@ -8,4 +8,5 @@ def login_view(request):
     data = Test.objects.all()
     return render(request, 'pages/login.html', {"greeting": greeting, "data": data})
 
+
     

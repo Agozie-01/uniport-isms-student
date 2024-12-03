@@ -1,25 +1,24 @@
 # adminapp/urls.py
-from django.urls import path
+from django.urls import re_path
 from . import views
 
 urlpatterns = [
-    #Authentication Routes
-    path('', views.login_view, name='login'),
-    path('dashboard', views.dashboard_home, name='dashboard_home'),
+    # Authentication Routes
+    re_path(r'^$', views.login_view, name='login'),  # Root URL
+    re_path(r'^dashboard/?$', views.dashboard_home, name='dashboard_home'),
 
-    #Results Managment Routes
-    path('results/upload', views.dashboard_upload_results, name='results_upload'),
-    path('results', views.dashboard_home, name='results_view'),
-    path('results/analysis', views.dashboard_home, name='results_analysis'),
-    path('results/spreadsheet/generate', views.dashboard_home, name='results_spreadsheet_generate'),
+    # Results Management Routes
+    re_path(r'^results/upload/?$', views.dashboard_upload_results, name='results_upload'),
+    re_path(r'^results/?$', views.dashboard_home, name='results_view'),
+    re_path(r'^results/analysis/?$', views.dashboard_home, name='results_analysis'),
+    re_path(r'^results/spreadsheet/generate/?$', views.dashboard_home, name='results_spreadsheet_generate'),
 
-    #Student Management Routes
-    path('students/manage', views.dashboard_home, name='students_manage'),
-    path('students/registration', views.dashboard_home, name='student_registration'),
-    path('students', views.dashboard_home, name='students'),
+    # Student Management Routes
+    re_path(r'^students/manage/?$', views.dashboard_home, name='students_manage'),
+    re_path(r'^students/registration/?$', views.dashboard_home, name='student_registration'),
+    re_path(r'^students/?$', views.dashboard_home, name='students'),
 
-    #Settings Routes
-    path('settings/system', views.dashboard_home, name='settings_system'),
-    path('settings/profile', views.dashboard_home, name='settings_profile'),
-
+    # Settings Routes
+    re_path(r'^settings/system/?$', views.dashboard_home, name='settings_system'),
+    re_path(r'^settings/profile/?$', views.dashboard_home, name='settings_profile'),
 ]
