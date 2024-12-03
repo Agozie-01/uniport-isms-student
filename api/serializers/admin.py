@@ -70,7 +70,7 @@ class AdminSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """
-        Create a new admin user with a hashed password.
+        Create a new admin user with a hashed password and set is_staff to True.
         """
         validated_data.pop('confirm_password')  # Remove confirm_password from the data
         user = User.objects.create_user(
@@ -80,6 +80,8 @@ class AdminSerializer(serializers.ModelSerializer):
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name']
         )
+        user.is_staff = True  # Set is_staff to True, making the user an admin
+        user.save()  # Save the user with the updated is_staff value
         return user
 
     def update(self, instance, validated_data):

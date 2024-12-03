@@ -16,8 +16,9 @@ urlpatterns = [
 
     # Admin endpoints
     re_path(r'^admins/?$', AdminView.as_view(), name='admin_new'),  # Optional trailing slash
+    re_path(r'^admins/(?P<admin_id>\d+)/?$', AdminView.as_view(), name='admin_detail'),
 
     re_path(r'^departments/?$', DepartmentView.as_view(), name='departments'),  # List/Create
-    re_path(r'^departments/(?P<department_id>\d+)/?$', DepartmentView.as_view(), name='department-detail'),  # Retrieve/Update/Delete
+    re_path(r'^departments/(?P<department_id>\d+)/?$', DepartmentView.as_view(), name='department_detail'),  # Retrieve/Update/Delete
 
 ]
