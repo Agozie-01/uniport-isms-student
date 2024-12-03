@@ -1,4 +1,4 @@
-.card {
+.card:not(.login-card) {
     border-radius: 8px;
     background-color: transparent;
     border: 2px solid #e8ecf2 !important;
@@ -54,6 +54,11 @@
 
 .btn:hover {
     --mdb-btn-box-shadow: 0;
+}
+
+.error {
+    color: #e63946;
+    font-size: 0.9em;
 }
 
 @media (min-width: 992px) {

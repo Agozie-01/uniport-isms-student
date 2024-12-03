@@ -17,17 +17,19 @@
                     </p>
                 </div>
 
-                <div class="card">
+                <div class="card login-card">
                     <div class="card-body">
                         <div class="m-sm-3">
                             <form id="login-form" method="POST">
                                 <div class="mb-3">
                                     <label class="form-label">Username</label>
-                                    <input class="form-control form-control-lg" type="text" name="username" placeholder="Enter your username or email address" />
+                                    <input type="text" class="form-control form-control-lg" type="text" name="username" placeholder="Enter your username or email address" />
+                                    <div class="error" id="username-error"></div>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Password</label>
                                     <input class="form-control form-control-lg" type="password" name="password" placeholder="Enter your password" />
+                                    <div class="error" id="password-error"></div>
                                 </div>
                                 <div>
                                     <div class="form-check align-items-center">
