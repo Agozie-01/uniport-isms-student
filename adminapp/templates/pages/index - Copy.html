@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Overview{% endblock %}
+
+{% block page_title %}
+<!-- Page Title with Animation -->
+<h1 class="h3 mb-4 animate__animated animate__fadeIn"><strong>Overview</strong></h1>
+{% endblock %}
+
+{% block content %}
+<div class="row animate__animated animate__fadeIn">
+    <!-- Total Students Card -->
+    <div class="col-md-3">
+        <div class="card rounded-lg" style="border: none; box-shadow: none;">
+            <div class="card-body">
+                <div class="row d-flex align-items-center">
+                    <div class="col-auto">
+                        <div class="stat text-primary">
+                            <i class="align-middle" data-feather="users"></i>
+                        </div>
+                    </div>
+                    <div class="col mt-2">
+                        <h5 class="card-title">Total Students</h5>
+                        <h4 class="mt-1 card-subtitle">0</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Courses Card -->
+    <div class="col-md-3">
+        <div class="card rounded-lg" style="border: none; box-shadow: none;">
+            <div class="card-body">
+                <div class="row d-flex align-items-center">
+                    <div class="col-auto">
+                        <div class="stat text-info">
+                            <i class="align-middle" data-feather="book-open"></i>
+                        </div>
+                    </div>
+                    <div class="col mt-2">
+                        <h5 class="card-title">Total Courses</h5>
+                        <h4 class="mt-1 card-subtitle">0</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Average Grade Card -->
+    <div class="col-md-3">
+        <div class="card rounded-lg" style="border: none; box-shadow: none;">
+            <div class="card-body">
+                <div class="row d-flex align-items-center">
+                    <div class="col-auto">
+                        <div class="stat text-warning">
+                            <i class="align-middle" data-feather="star"></i>
+                        </div>
+                    </div>
+                    <div class="col mt-2">
+                        <h5 class="card-title">Average Grade</h5>
+                        <h4 class="mt-1 card-subtitle">N/A</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Results Uploaded Card -->
+    <div class="col-md-3">
+        <div class="card rounded-lg" style="border: none; box-shadow: none;">
+            <div class="card-body">
+                <div class="row d-flex align-items-center">
+                    <div class="col-auto">
+                        <div class="stat text-danger">
+                            <i class="align-middle" data-feather="clock"></i>
+                        </div>
+                    </div>
+                    <div class="col mt-2">
+                        <h5 class="card-title">Results Uploaded</h5>
+                        <h4 class="mt-1 card-subtitle">0</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4 animate__animated animate__fadeIn">
+    <!-- Graph Section -->
+    <div class="col-md-8">
+        <div class="card rounded-lg" style="border: none; box-shadow: none;">
+            <div class="card-body">
+                <h5 class="card-title mb-4">Course Performance Trend</h5>
+                <div class="chart">
+                    <canvas id="chartjs-line"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activities Section -->
+    <div class="col-md-4">
+        <div class="card rounded-lg" style="border: none; box-shadow: none;">
+            <div class="card-body">
+                {% include '../components/recent_activities.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block custom_scripts %}
+    {% include '../components/performance_chart_script.html' %}
+{% endblock %}

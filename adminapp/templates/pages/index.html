@@ -9,83 +9,33 @@
 {% endblock %}
 
 {% block content %}
-<div id="dashboard-stats" class="row animate__animated animate__fadeIn">
-    <!-- Total Students Card -->
-    <div class="col-md-3">
-        <div class="card rounded-lg" style="border: none; box-shadow: none;">
-            <div class="card-body">
-                <div class="row d-flex align-items-center">
-                    <div class="col-auto">
-                        <div class="stat text-primary">
-                            <i class="align-middle" data-feather="users"></i>
+<div x-data="dashboardStats()" x-init="fetchStats()">
+    <div class="row animate__animated animate__fadeIn" id="dashboard-stats">
+        <!-- Loop over stats array using x-for -->
+        <template x-for="(stat, index) in stats" :key="index">
+            <div class="col-md-3">
+                <div class="card rounded-lg" style="border: none; box-shadow: none;">
+                    <div class="card-body">
+                        <div class="row d-flex align-items-center">
+                            <div class="col-auto">
+                                <div class="stat text-primary">
+                                    <!-- Dynamically update the icon -->
+                                    <i class="align-middle" :data-feather="stat.icon"></i>
+                                </div>
+                            </div>
+                            <div class="col mt-2">
+                                <!-- Dynamically update the title and value -->
+                                <h5 class="card-title" x-text="stat.title"></h5>
+                                <h4 class="mt-1 card-subtitle" x-text="stat.value"></h4>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col mt-2">
-                        <h5 class="card-title">Total Students</h5>
-                        <h4 class="mt-1 card-subtitle">0</h4>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Total Courses Card -->
-    <div class="col-md-3">
-        <div class="card rounded-lg" style="border: none; box-shadow: none;">
-            <div class="card-body">
-                <div class="row d-flex align-items-center">
-                    <div class="col-auto">
-                        <div class="stat text-info">
-                            <i class="align-middle" data-feather="book-open"></i>
-                        </div>
-                    </div>
-                    <div class="col mt-2">
-                        <h5 class="card-title">Total Courses</h5>
-                        <h4 class="mt-1 card-subtitle">0</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Average Grade Card -->
-    <div class="col-md-3">
-        <div class="card rounded-lg" style="border: none; box-shadow: none;">
-            <div class="card-body">
-                <div class="row d-flex align-items-center">
-                    <div class="col-auto">
-                        <div class="stat text-warning">
-                            <i class="align-middle" data-feather="star"></i>
-                        </div>
-                    </div>
-                    <div class="col mt-2">
-                        <h5 class="card-title">Average Grade</h5>
-                        <h4 class="mt-1 card-subtitle">N/A</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Total Results Uploaded Card -->
-    <div class="col-md-3">
-        <div class="card rounded-lg" style="border: none; box-shadow: none;">
-            <div class="card-body">
-                <div class="row d-flex align-items-center">
-                    <div class="col-auto">
-                        <div class="stat text-danger">
-                            <i class="align-middle" data-feather="clock"></i>
-                        </div>
-                    </div>
-                    <div class="col mt-2">
-                        <h5 class="card-title">Results Uploaded</h5>
-                        <h4 class="mt-1 card-subtitle">0</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </template>
     </div>
 </div>
+
 
 <div class="row mt-4 animate__animated animate__fadeIn">
     <!-- Graph Section -->
