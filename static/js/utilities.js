@@ -85,3 +85,156 @@ function enableForm(formId) {
     element.disabled = false;
   });
 }
+
+async function getRequest(url, headers = {}) {
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        ...headers,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`GET request failed with status ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("GET request error:", error);
+    throw error;
+  }
+}
+
+async function postRequest(url, data, headers = {}) {
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...headers,
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error(`POST request failed with status ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("POST request error:", error);
+    throw error;
+  }
+}
+
+async function putRequest(url, data, headers = {}) {
+  try {
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        ...headers,
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error(`PUT request failed with status ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("PUT request error:", error);
+    throw error;
+  }
+}
+
+async function deleteRequest(url, headers = {}) {
+  try {
+    const response = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        ...headers,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`DELETE request failed with status ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("DELETE request error:", error);
+    throw error;
+  }
+}
+
+/**
+ * Dispatch a request (GET, POST, PUT, DELETE) with optional persistence and fallback to old data.
+ * @param {string} key - The key to store/retrieve the data under in DataStore.
+ * @param {string} method - The HTTP method (GET, POST, PUT, DELETE).
+ * @param {string} url - The API endpoint URL.
+ * @param {object} [data=null] - The data to send in the request body (for POST/PUT).
+ * @param {object} [headers={}] - Optional headers for the request.
+ * @param {boolean} [persist=true] - Whether to persist the data in DataStore.
+ * @param {boolean} [fallback=true] - Whether to use old data from DataStore if the request fails.
+ * @returns {Promise<any>} - The response data or old data if fallback is enabled and API fails.
+ */
+async function dispatchRequest(key, method, url, data = null, persist = true, fallback = true) {
+  const accessToken = TokenStore?.getAccessToken();
+
+  let headers = {};
+  
+  if (accessToken) {
+    headers = {
+      Authorization: `Bearer ${accessToken}`, // Add the token
+    };
+  }
+
+  try {
+    let responseData;
+
+    // Dispatch the appropriate request method
+    switch (method.toUpperCase()) {
+      case "GET":
+        responseData = await getRequest(url, headers);
+        break;
+      case "POST":
+        responseData = await postRequest(url, data, headers);
+        break;
+      case "PUT":
+        responseData = await putRequest(url, data, headers);
+        break;
+      case "DELETE":
+        responseData = await deleteRequest(url, headers);
+        break;
+      default:
+        throw new Error(`Unsupported request method: ${method}`);
+    }
+
+    // Persist the data in DataStore if persist is true and a key is provided
+    if (persist && key) {
+      DataStore.set(key, responseData);
+    }
+
+    // Return the response data
+    return responseData;
+  } catch (error) {
+    console.error(`Failed to process request for key "${key}":`, error);
+
+    // Fallback to old data if enabled and key is provided
+    if (fallback && key) {
+      const oldData = DataStore.get(key);
+      if (oldData) {
+        console.warn(`Using old data for key "${key}" due to API failure.`);
+        return oldData;
+      }
+    }
+
+    throw error; // Re-throw the error if no fallback is available
+  }
+}
+

@@ -52,6 +52,8 @@ const loginConstrants = {
           enableForm(this.id);
         } else {
           const data = await response.json();
+
+          TokenStore.set(data?.access, data?.refresh);
          
           toastSuccess("Logged in successfully!", "right", function() {
             window.location.href = '/dashboard/';
