@@ -56,7 +56,7 @@ const loginConstrants = {
           TokenStore.set(data?.access, data?.refresh);
          
           toastSuccess("Logged in successfully!", "right", function() {
-            window.location.href = '/dashboard/';
+            window.location.href = '/dashboard';
           })
         }
       } catch (error) {

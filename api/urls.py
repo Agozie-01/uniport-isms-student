@@ -1,5 +1,18 @@
 from django.urls import re_path
-from .views import StudentView, AdminView, DepartmentView, CurrentUserView, DashboardStatsView
+
+from .views import (
+    StudentView, 
+    AdminView, 
+    DepartmentView, 
+    CurrentUserView, 
+    DashboardStatsView, 
+    RecentActivitiesView,
+    CoursePerformanceTrendView,
+    CourseView,
+    SemesterView,
+    SessionView
+)
+
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -26,4 +39,19 @@ urlpatterns = [
     # Dashboard
     re_path(r'^dashboard/stats/?$', DashboardStatsView.as_view(), name='dashboard'),
 
+    # Activity log
+    re_path(r'^activities/recent/?$', RecentActivitiesView.as_view(), name='recent_activities'),
+
+    # Courses
+    re_path(r'^courses/performance-trend/?$', CoursePerformanceTrendView.as_view(), name='course_performance_trend'),
+    re_path(r'^courses/?$', CourseView.as_view(), name='course_list_create'),  # For listing and creating courses
+    re_path(r'^courses/(?P<course_id>\d+)/?$', CourseView.as_view(), name='course_detail'),  # For getting, updating, and deleting specific courses
+
+    # Semesters
+    re_path(r'^semesters/?$', SemesterView.as_view(), name='semester_list_create'),  # List all semesters and create new one
+    re_path(r'^semesters/(?P<semester_id>\d+)/?$', SemesterView.as_view(), name='semester_detail'),  # Get, update, and delete a specific semester
+
+    # Sessions
+    re_path(r'^sessions/?$', SessionView.as_view(), name='session_list_create'),  # List all sessions and create new one
+    re_path(r'^sessions/(?P<session_id>\d+)/?$', SessionView.as_view(), name='session_detail'),  # Get, update, and delete specific sessions
 ]

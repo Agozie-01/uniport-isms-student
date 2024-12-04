@@ -21,6 +21,7 @@ class DashboardStatsView(APIView):
                 "average_grade": "N/A",
                 "results_uploaded": results_uploaded,
             }
+            
             return Response(data)
         except Exception as e:
             return Response({"error": str(e)}, status=500)

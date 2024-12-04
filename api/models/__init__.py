@@ -4,3 +4,6 @@ from .student import Student
 from .admin import Admin
 from .result import Result
 from .test import Test
+from .activity_log import ActivityLog
+from .semester import Semester
+from .session import Session

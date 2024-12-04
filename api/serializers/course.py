@@ -1,15 +1,15 @@
 from rest_framework import serializers
-from ..models import Student
+from ..models import Course
 
-class StudentSerializer(serializers.ModelSerializer):
+class CourseSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Student
-        fields = ['id', 'first_name', 'last_name', 'matric_number', 'department', 'email', 'date_of_birth', 'created_at']
+        model = Course
+        fields = ['id', 'name', 'code', 'department', 'session', 'credit_units', 'description', 'is_active', 'created_at', 'updated_at']
         extra_kwargs = {
-            'first_name': {'required': True},
-            'last_name': {'required': True},
-            'matric_number': {'required': True},
-            'department': {'required': True},  # Change to False if optional
-            'email': {'required': True},
-            'date_of_birth': {'required': False},  # Change to False if optional
+            'name': {'required': True},
+            'code': {'required': True},
+            'department': {'required': True},
+            'session': {'required': True},  # Ensure session is required if it's critical
+            'credit_units': {'required': True},
+            'is_active': {'required': True},
         }
