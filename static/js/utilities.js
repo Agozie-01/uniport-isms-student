@@ -238,3 +238,18 @@ async function dispatchRequest(key, method, url, data = null, persist = true, fa
   }
 }
 
+function formatTime(timestamp) {
+  const date = new Date(timestamp);
+  const now = new Date();
+  const diffInMinutes = Math.floor((now - date) / (1000 * 60));
+
+  if (diffInMinutes < 60) {
+      return `${diffInMinutes} mins ago`;
+  } else if (diffInMinutes < 1440) { // Less than 24 hours
+      return `${Math.floor(diffInMinutes / 60)} hour${Math.floor(diffInMinutes / 60) > 1 ? 's' : ''} ago`;
+  } else {
+      return `${Math.floor(diffInMinutes / 1440)} day${Math.floor(diffInMinutes / 1440) > 1 ? 's' : ''} ago`;
+  }
+}
+
+

@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAdminUser
 from ..models import Student
 from ..serializers import StudentSerializer
+from ..utils import log_activity
 
 class StudentView(APIView):
     permission_classes = [IsAdminUser]
@@ -22,6 +23,9 @@ class StudentView(APIView):
         """
         Retrieve a single student by ID or list all students.
         """
+
+        log_activity(request.user, "Get User", "List Single User")
+
         if student_id:
             try:
                 student = Student.objects.get(pk=student_id)

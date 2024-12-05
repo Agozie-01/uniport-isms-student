@@ -24,3 +24,36 @@ window.dashboardStats = function dashboardStats() {
     }
   };
 };
+
+
+window.recentActivities = function() {
+  return {
+      activities: [], // Holds the list of activities
+
+      // Method to fetch recent activities from the API
+      async fetchActivities() {
+          try {
+              // Fetch recent activities from the API
+              const activities = await dispatchRequest("recentActivities", "GET", "/api/activities/recent");
+              
+              // Map the response data to displayable activity structure
+              this.activities = activities.map(activity => ({
+                  title: activity.subject, // Activity subject
+                  description: activity.action, // Activity action/description
+                  time: formatTime(activity.timestamp), // Format the timestamp
+                  icon: activity.icon || 'bi-clock' // Default icon if none is provided
+              }));
+          } catch (error) {
+              // Display an alert with a more descriptive error message
+              console.error("Error fetching recent activities:", error);
+              alert("Failed to load recent activities. Please try again.");
+          }
+      }
+  };
+};
+
+
+
+
+
+

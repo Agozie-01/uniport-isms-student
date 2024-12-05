@@ -89,6 +89,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    #'api.middleware.activity_logger.ActivityLoggerMiddleware',
 ]
 
 ROOT_URLCONF = 'isms.urls'
@@ -153,7 +154,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# Use your preferred time zone (e.g., 'Africa/Lagos' for Nigerian time)
+TIME_ZONE = 'Africa/Lagos'
 
 USE_I18N = True
 

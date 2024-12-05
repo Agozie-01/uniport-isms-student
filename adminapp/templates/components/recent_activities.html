@@ -1,34 +1,26 @@
-<h6 class="card-title">Recent Activities</h6> <!-- Changed h5 to h6 for smaller title -->
-<ul class="list-unstyled mt-3">
-    <!-- Activity Item 1 -->
-    <li class="mb-3">
-        <div class="d-flex justify-content-between">
-            <span class="small"><strong>Uploaded Results:</strong> ECE510, ECE515</span>
-            <small class="text-muted">5 mins ago</small>
-        </div>
-        <p class="mb-0 text-muted small">Admin uploaded results for the 1st semester, 2023/2024 session.</p>
-    </li>
+<div x-data="recentActivities()" x-init="fetchActivities()">
+    <h6 class="card-title">Recent Activities</h6> <!-- Changed h5 to h6 for smaller title -->
+    
+    <ul class="list-unstyled mt-3">
+        <!-- Loop through activities -->
+        <template x-for="(activity, index) in activities" :key="index">
+            <li class="mb-3">
+                <div class="d-flex justify-content-between">
+                    <span class="small"><strong x-text="activity.title"></strong></span>
+                    <small class="text-muted" x-text="activity.time"></small>
+                </div>
+                <p class="mb-0 text-muted small" x-text="activity.description"></p>
+            </li>
+        </template>
+    </ul>
 
-    <!-- Activity Item 2 -->
-    <li class="mb-3">
-        <div class="d-flex justify-content-between">
-            <span class="small"><strong>New Student Registration:</strong> Amaka Brian</span>
-            <small class="text-muted">1 hour ago</small>
-        </div>
-        <p class="mb-0 text-muted small">A new student has been registered for the 2023/2024 session.</p>
-    </li>
+    <!-- Show message when no activities are available -->
+    <div x-show="activities.length === 0">
+        <p>No recent activities available.</p>
+    </div>
 
-    <!-- Activity Item 3 -->
-    <li class="mb-3">
-        <div class="d-flex justify-content-between">
-            <span class="small"><strong>Updated Profile:</strong> Brian Peter</span>
-            <small class="text-muted">3 hours ago</small>
-        </div>
-        <p class="mb-0 text-muted small">Profile information for Matriculation Number U2018/3020083 was updated.</p>
-    </li>
-</ul>
-
-<!-- Read More Link -->
-<div class="text-end mt-3">
-    <a href="#" class="text-primary small">Read more</a>
+    <!-- Read More Link -->
+    <div x-show="activities.length > 10" class="text-end mt-3">
+        <a href="#" class="text-primary small">Read more</a>
+    </div>
 </div>
