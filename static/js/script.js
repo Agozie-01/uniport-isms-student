@@ -1,23 +1,26 @@
-async fetchStats() {
-  try {
-      const dashboardStats = await dispatchRequest("dashboardStats", "GET", "/api/dashboard/stats");
+window.dashboardStats = function dashboardStats() {
+  return {
+    stats: [
+      { title: 'Total Students', value: 0, icon: 'bi-people' },
+      { title: 'Total Courses', value: 0, icon: 'bi-journal-bookmark' },
+      { title: 'Average Grade', value: "N/A", icon: 'bi-star' },
+      { title: 'Results Uploaded', value: 0, icon: 'bi-clock-history' }
+    ],
 
-      this.stats = [
-          { title: 'Total Students', value: dashboardStats.total_students, icon: 'users' },
-          { title: 'Total Courses', value: dashboardStats.total_courses, icon: 'book-open' },
-          { title: 'Average Grade', value: dashboardStats.average_grade, icon: 'star' },
-          { title: 'Results Uploaded', value: dashboardStats.results_uploaded, icon: 'clock' }
-      ];
+    // Fetch stats and update
+    async fetchStats() {
+      try {
+        const dashboardStats = await dispatchRequest("dashboardStats", "GET", "/api/dashboard/stats");
 
-      // Wait for Alpine.js to finish rendering the DOM
-      this.$nextTick(() => {
-          setTimeout(() => {
-              feather.replace(); // Apply Feather icons after Alpine.js renders the DOM
-          }, 100);
-      });
-
-  } catch (error) {
-      console.error("Error loading dashboard stats:", error);
-      alert("Failed to load dashboard stats. Please try again.");
-  }
-}
+        this.stats = [
+          { title: 'Total Students', value: dashboardStats.total_students, icon: 'bi-people' },
+          { title: 'Total Courses', value: dashboardStats.total_courses, icon: 'bi-book' },
+          { title: 'Average Grade', value: dashboardStats.average_grade, icon: 'bi-star' },
+          { title: 'Results Uploaded', value: dashboardStats.results_uploaded, icon: 'bi-check-circle' }
+        ];
+      } catch (error) {
+        alert("Failed to load dashboard stats. Please try again.");
+      }
+    }
+  };
+};

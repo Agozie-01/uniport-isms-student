@@ -11,31 +11,30 @@
 {% block content %}
 <div x-data="dashboardStats()" x-init="fetchStats()">
     <div class="row animate__animated animate__fadeIn" id="dashboard-stats">
-        <!-- Loop over stats array using x-for -->
-        <template x-for="(stat, index) in stats" :key="index">
-            <div class="col-md-3">
-                <div class="card rounded-lg" style="border: none; box-shadow: none;">
-                    <div class="card-body">
-                        <div class="row d-flex align-items-center">
-                            <div class="col-auto">
-                                <div class="stat text-primary">
-                                    <!-- Dynamically update the icon -->
-                                    <i class="align-middle" :data-feather="stat.icon"></i>
-                                </div>
-                            </div>
-                            <div class="col mt-2">
-                                <!-- Dynamically update the title and value -->
-                                <h5 class="card-title" x-text="stat.title"></h5>
-                                <h4 class="mt-1 card-subtitle" x-text="stat.value"></h4>
-                            </div>
-                        </div>
-                    </div>
+      <template x-for="stat in stats" :key="stat.title">
+        <div class="col-md-3">
+          <div class="card rounded-lg" style="border: none; box-shadow: none;">
+            <div class="card-body">
+              <div class="row d-flex align-items-center">
+                <div class="col-auto">
+                  <div class="stat text-primary">
+                    <!-- Dynamically update the icon -->
+                    <i class="align-middle" :class="stat.icon"></i>
+                  </div>
                 </div>
+                <div class="col mt-2">
+                  <!-- Dynamically update the title and value -->
+                  <h5 class="card-title" x-text="stat.title"></h5>
+                  <h4 class="mt-1 card-subtitle" x-text="stat.value"></h4>
+                </div>
+              </div>
             </div>
-        </template>
+          </div>
+        </div>
+      </template>
     </div>
 </div>
-
+  
 
 <div class="row mt-4 animate__animated animate__fadeIn">
     <!-- Graph Section -->
