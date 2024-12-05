@@ -136,7 +136,7 @@ window.studentList = function() {
 };
 
 
-window.uploadStudent = function () {
+window.uploadStudent = function() {
   return {
     loading: false,
     file: null,
@@ -204,6 +204,102 @@ window.uploadStudent = function () {
           );
           console.log("Error uploading student records:", error);
         }
+      } finally {
+        this.loading = false;
+      }
+    },
+  };
+};
+
+window.addStudent = function () {
+  return {
+    loading: false,
+    errors: {}, // Store field-specific and general errors
+    successMessage: "", // Success message for successful submissions
+    studentData: {
+      firstName: "",
+      lastName: "",
+      matricNumber: "",
+      department: "",
+      email: "",
+      level: "",
+      dateOfBirth: "",
+    },
+
+    // Method to add a new student
+    async addStudent() {
+      // Clear previous errors and messages
+      this.errors = {};
+      this.successMessage = "";
+
+      // Validate input fields
+      const requiredFields = [
+        "firstName",
+        "lastName",
+        "matricNumber",
+        "department",
+        "email",
+        "level",
+        "dateOfBirth",
+      ];
+
+      const missingFields = requiredFields.filter(
+        (field) => !this.studentData[field]
+      );
+
+      if (missingFields.length > 0) {
+        this.errors.general =
+          "Please fill out all the required fields.";
+        missingFields.forEach((field) => {
+          this.errors[field] = `${field.replace(
+            /([A-Z])/g,
+            " $1"
+          )} is required.`; // Converts camelCase to readable text
+        });
+        return;
+      }
+
+      this.loading = true;
+
+      // Prepare the payload
+      const payload = {
+        first_name: this.studentData.firstName,
+        last_name: this.studentData.lastName,
+        matric_number: this.studentData.matricNumber,
+        email: this.studentData.email,
+        department: this.studentData.department,
+        level: this.studentData.level,
+        date_of_birth: this.studentData.dateOfBirth,
+      };
+
+      try {
+        // Send the API request
+        const response = await dispatchRequest(
+          "addStudent", // Unique key for request
+          "POST", // HTTP method
+          `/api/students`, // Endpoint
+          payload // Payload data
+        );
+
+        // Handle success
+        this.successMessage = "Student added successfully!";
+        this.errors = {}; // Clear errors
+      } catch (error) {
+        // Handle API errors
+        if (error?.data) {
+          const apiErrors = error.data;
+
+          // Map errors to `errors` object
+          this.errors = {};
+          for (const [field, messages] of Object.entries(apiErrors)) {
+            this.errors[field] = messages[0]; // Use the first error message
+          }
+        } else {
+          this.errors.general =
+            error?.data?.error || "An unexpected error occurred.";
+        }
+
+        this.successMessage = ""; // Clear success message
       } finally {
         this.loading = false;
       }

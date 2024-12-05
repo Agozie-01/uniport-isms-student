@@ -97,45 +97,50 @@ async function getRequest(url, headers = {}) {
     });
 
     if (!response.ok) {
-      throw new Error(`GET request failed with status ${response.status}`);
+      const errorData = await response.json();
+      throw { status: response.status, data: errorData };
     }
 
-    return await response.json();
+    return await response.json(); // Return the original response as is
   } catch (error) {
-    console.error("GET request error:", error);
-    throw error;
+    if (error instanceof SyntaxError) {
+      console.error("Error parsing JSON response:", error);
+    }
+    throw error; // Ensure error is propagated as is
   }
 }
 
 async function postRequest(url, data, headers = {}) {
   try {
     let body;
-    let contentHeaders = {};
+    let isFormData = false;
 
-    // Check if `data` is an instance of FormData
+    // Check if data is an instance of FormData (for file uploads)
     if (data instanceof FormData) {
-      body = data; // Use FormData as is
+      body = data;
+      isFormData = true;
     } else {
-      body = JSON.stringify(data); // Convert other data types to JSON
-      contentHeaders["Content-Type"] = "application/json";
+      // Otherwise, assume JSON
+      body = JSON.stringify(data);
+      headers["Content-Type"] = "application/json"; // Set Content-Type for JSON
     }
 
     const response = await fetch(url, {
       method: "POST",
-      headers: {
-        ...contentHeaders, // Automatically set Content-Type based on data type
-        ...headers, // Add additional headers, like Authorization
-      },
-      body: body,
+      headers: isFormData ? headers : { ...headers }, // Do not set Content-Type for FormData
+      body,
     });
 
     if (!response.ok) {
-      throw new Error(`POST request failed with status ${response.status}`);
+      const errorData = await response.json();
+      throw { status: response.status, data: errorData };
     }
 
-    return await response.json();
+    return await response.json(); // Return the original response as is
   } catch (error) {
-    console.error("POST request error:", error);
+    if (error instanceof SyntaxError) {
+      console.error("Error parsing JSON response:", error);
+    }
     throw error;
   }
 }
@@ -153,12 +158,15 @@ async function putRequest(url, data, headers = {}) {
     });
 
     if (!response.ok) {
-      throw new Error(`PUT request failed with status ${response.status}`);
+      const errorData = await response.json();
+      throw { status: response.status, data: errorData };
     }
 
-    return await response.json();
+    return await response.json(); // Return the original response as is
   } catch (error) {
-    console.error("PUT request error:", error);
+    if (error instanceof SyntaxError) {
+      console.error("Error parsing JSON response:", error);
+    }
     throw error;
   }
 }
@@ -174,81 +182,69 @@ async function deleteRequest(url, headers = {}) {
     });
 
     if (!response.ok) {
-      throw new Error(`DELETE request failed with status ${response.status}`);
+      const errorData = await response.json();
+      throw { status: response.status, data: errorData };
     }
 
-    return await response.json();
+    return await response.json(); // Return the original response as is
   } catch (error) {
-    console.error("DELETE request error:", error);
+    if (error instanceof SyntaxError) {
+      console.error("Error parsing JSON response:", error);
+    }
     throw error;
   }
 }
 
-/**
- * Dispatch a request (GET, POST, PUT, DELETE) with optional persistence and fallback to old data.
- * @param {string} key - The key to store/retrieve the data under in DataStore.
- * @param {string} method - The HTTP method (GET, POST, PUT, DELETE).
- * @param {string} url - The API endpoint URL.
- * @param {object} [data=null] - The data to send in the request body (for POST/PUT).
- * @param {object} [headers={}] - Optional headers for the request.
- * @param {boolean} [persist=true] - Whether to persist the data in DataStore.
- * @param {boolean} [fallback=true] - Whether to use old data from DataStore if the request fails.
- * @returns {Promise<any>} - The response data or old data if fallback is enabled and API fails.
- */
 async function dispatchRequest(key, method, url, data = null, persist = true, fallback = true) {
   const accessToken = TokenStore?.getAccessToken();
 
   let headers = {};
-  
   if (accessToken) {
-    headers = {
-      Authorization: `Bearer ${accessToken}`, // Add the token
-    };
+    headers.Authorization = `Bearer ${accessToken}`;
   }
 
   try {
-    let responseData;
+    let response;
 
-    // Dispatch the appropriate request method
     switch (method.toUpperCase()) {
       case "GET":
-        responseData = await getRequest(url, headers);
+        response = await getRequest(url, headers);
         break;
       case "POST":
-        responseData = await postRequest(url, data, headers);
+        response = await postRequest(url, data, headers);
         break;
       case "PUT":
-        responseData = await putRequest(url, data, headers);
+        response = await putRequest(url, data, headers);
         break;
       case "DELETE":
-        responseData = await deleteRequest(url, headers);
+        response = await deleteRequest(url, headers);
         break;
       default:
-        throw new Error(`Unsupported request method: ${method}`);
+        throw new Error(`Unsupported HTTP method: ${method}`);
     }
 
-    // Persist the data in DataStore if persist is true and a key is provided
+    // Persist successful response if needed
     if (persist && key) {
-      DataStore.set(key, responseData);
+      DataStore.set(key, response);
     }
 
-    // Return the response data
-    return responseData;
+    return response; // Return the original response as is
   } catch (error) {
-    console.error(`Failed to process request for key "${key}":`, error);
+    console.error(`Request failed for key "${key}":`, error);
 
-    // Fallback to old data if enabled and key is provided
+    // Fallback to old data if enabled
     if (fallback && key) {
       const oldData = DataStore.get(key);
       if (oldData) {
-        console.warn(`Using old data for key "${key}" due to API failure.`);
+        console.warn(`Using old data for key "${key}" due to request failure.`);
         return oldData;
       }
     }
 
-    throw error; // Re-throw the error if no fallback is available
+    throw error; // Re-throw the error for further handling
   }
 }
+
 
 function formatTime(timestamp) {
   const date = new Date(timestamp);

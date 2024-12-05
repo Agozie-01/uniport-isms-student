@@ -1,5 +1,5 @@
 <!-- Modal for Add Student -->
-<div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+<div x-data="addStudent()" class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -7,25 +7,66 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="#" method="POST">
-                    <div class="mb-3">
-                        <label for="studentName" class="form-label">Full Name</label>
-                        <input type="text" class="form-control" id="studentName" name="studentName" required />
+                <form @submit.prevent="addStudent">
+                    <!-- Display general error if any -->
+                    <div x-show="errors?.general" class="alert alert-danger">
+                        <span x-text="errors?.general"></span>
                     </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="firstName" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="firstName" x-model="studentData.firstName" :class="{'is-invalid': errors?.first_name}" required />
+                            <div x-show="errors?.first_name" class="invalid-feedback" x-text="errors?.first_name"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="lastName" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="lastName" x-model="studentData.lastName" :class="{'is-invalid': errors?.last_name}" required />
+                            <div x-show="errors?.last_name" class="invalid-feedback" x-text="errors?.last_name"></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="studentEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="studentEmail" x-model="studentData.email" :class="{'is-invalid': errors?.email}" required />
+                            <div x-show="errors?.email" class="invalid-feedback" x-text="errors?.email"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="studentLevel" class="form-label">Level</label>
+                            <input type="number" class="form-control" id="studentLevel" x-model="studentData.level" :class="{'is-invalid': errors?.level}" required />
+                            <div x-show="errors?.level" class="invalid-feedback" x-text="errors?.level"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="matricNumber" class="form-label">Matric Number</label>
+                        <input type="text" class="form-control" id="matricNumber" x-model="studentData.matricNumber" :class="{'is-invalid': errors?.matric_number}" required />
+                        <div x-show="errors?.matric_number" class="invalid-feedback" x-text="errors?.matric_number"></div>
+                    </div>
+
                     <div class="mb-3">
                         <label for="studentDept" class="form-label">Department</label>
-                        <input type="text" class="form-control" id="studentDept" name="studentDept" required />
+                        <input type="text" class="form-control" id="studentDept" x-model="studentData.department" :class="{'is-invalid': errors?.department}" required />
+                        <div x-show="errors?.department" class="invalid-feedback" x-text="errors?.department"></div>
                     </div>
+
                     <div class="mb-3">
-                        <label for="studentLevel" class="form-label">Level</label>
-                        <input type="number" class="form-control" id="studentLevel" name="studentLevel" required />
+                        <label for="dateOfBirth" class="form-label">Date of Birth</label>
+                        <input type="date" class="form-control" id="dateOfBirth" x-model="studentData.dateOfBirth" :class="{'is-invalid': errors?.date_of_birth}" required />
+                        <div x-show="errors?.date_of_birth" class="invalid-feedback" x-text="errors?.date_of_birth"></div>
                     </div>
-                    <div class="mb-3">
-                        <label for="studentEmail" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="studentEmail" name="studentEmail" required />
-                    </div>
-                    <button type="submit" class="btn btn-outline-secondary">Add Student</button>
+                    <br />
+                    <button type="submit" class="btn btn-secondary" :disabled="loading">
+                        <span x-show="loading">Adding...</span>
+                        <span x-show="!loading">Add Student</span>
+                    </button>
                 </form>
+
+                <!-- Success Message -->
+                <div x-show="successMessage" class="alert alert-success mt-3">
+                    <span x-text="successMessage"></span>
+                </div>
             </div>
         </div>
     </div>
