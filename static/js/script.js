@@ -91,6 +91,52 @@ window.userDetails = function() {
 };
 
 
+window.studentList = function() {
+  return {
+    students: [], // Array to hold students data
+    searchTerm: '',
+    page: 1, // Current page for pagination
+    totalPages: 1, // Total number of pages for pagination
+
+    // Method to fetch student records
+    async fetchRecords() {
+      try {
+        const response = await dispatchRequest("studentList", "GET", `/api/students?page=${this.page}&search_term=${this.searchTerm}`);
+        
+        // Assuming the API response follows the format:
+        // {
+        //   "count": 3,
+        //   "next": null,
+        //   "previous": null,
+        //   "results": [ ... ]
+        // }
+        
+        this.students = response.results; // Students list
+        this.totalPages = Math.ceil(response.count / 10); // Total pages based on count and page size (10 per page)
+
+      } catch (error) {
+        console.error("Error fetching student records:", error);
+      }
+    },
+
+    // Pagination methods
+    prevPage() {
+      if (this.page > 1) {
+        this.page--;
+        this.fetchRecords(); // Fetch new records for the previous page
+      }
+    },
+
+    nextPage() {
+      if (this.page < this.totalPages) {
+        this.page++;
+        this.fetchRecords(); // Fetch new records for the next page
+      }
+    }
+  };
+};
+
+
 
 
 

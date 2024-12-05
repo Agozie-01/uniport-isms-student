@@ -10,7 +10,10 @@ from .views import (
     CoursePerformanceTrendView,
     CourseView,
     SemesterView,
-    SessionView
+    SessionView,
+    UploadResultsView,
+    FetchResultsView,
+    GenerateSpreadsheetView
 )
 
 from rest_framework_simplejwt.views import (
@@ -56,4 +59,9 @@ urlpatterns = [
     # Sessions
     re_path(r'^sessions/?$', SessionView.as_view(), name='session_list_create'),  # List all sessions and create new one
     re_path(r'^sessions/(?P<session_id>\d+)/?$', SessionView.as_view(), name='session_detail'),  # Get, update, and delete specific sessions
+
+    # Result Management
+    re_path(r"^results/?$", FetchResultsView.as_view(), name="fetch_results"),
+    re_path(r"^^results/spreadsheet/(?P<student_id>\d+)/?$", GenerateSpreadsheetView.as_view(), name="generate_spreadsheet"),
+    re_path(r"^results/upload/?$", UploadResultsView.as_view(), name="upload_results"),
 ]

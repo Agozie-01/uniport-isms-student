@@ -2,6 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser
+from rest_framework.pagination import PageNumberPagination
+from django.db.models import Q  # Add this import
 from ..models import Student
 from ..serializers import StudentSerializer
 from ..utils import log_activity
@@ -21,9 +23,8 @@ class StudentView(APIView):
 
     def get(self, request, student_id=None):
         """
-        Retrieve a single student by ID or list all students.
+        Retrieve a single student by ID or list all students with pagination and search.
         """
-
         log_activity(request.user, "Get User", "List Single User")
 
         if student_id:
@@ -34,10 +35,25 @@ class StudentView(APIView):
             except Student.DoesNotExist:
                 return Response({"error": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
         else:
-            # List all students
+            # Search term
+            search_term = request.query_params.get('search_term', '').strip()
+
+            # Queryset
             students = Student.objects.all()
-            serializer = StudentSerializer(students, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            if search_term:
+                students = students.filter(
+                    Q(first_name__icontains=search_term) |
+                    Q(last_name__icontains=search_term) |
+                    Q(matric_number__icontains=search_term) |
+                    Q(email__icontains=search_term)
+                )
+
+            # Paginate the list of students
+            paginator = PageNumberPagination()
+            paginator.page_size = 10  # Number of students per page (adjust as needed)
+            result_page = paginator.paginate_queryset(students, request)
+            serializer = StudentSerializer(result_page, many=True)
+            return paginator.get_paginated_response(serializer.data)
 
     def put(self, request, student_id=None):
         """

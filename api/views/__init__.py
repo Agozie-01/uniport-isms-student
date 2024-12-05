@@ -8,4 +8,5 @@ from .course_performance_trend import CoursePerformanceTrendView
 from .course import CourseView
 from .semester import SemesterView
 from .session import SessionView
+from .result import *
 

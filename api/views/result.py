@@ -23,31 +23,40 @@ class FetchResultsView(APIView):
 
 
 class GenerateSpreadsheetView(APIView):
-    """
-    Endpoint to generate and download a spreadsheet of results.
-    """
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        results = Result.objects.all()
-        data = ResultSerializer(results, many=True).data
+    def get(self, request, student_id):
+        try:
+            # Fetch all results for the given student
+            student = Student.objects.get(id=student_id)
+            results = Result.objects.filter(student=student)
+            
+            # Validate that results exist
+            if not results.exists():
+                return Response({"message": "No results found for this student"}, status=status.HTTP_404_NOT_FOUND)
+            
+            # Generate spreadsheet logic here
+            response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            response["Content-Disposition"] = f"attachment; filename={student_id}_results.xlsx"
+            
+            # Example: Generate a basic spreadsheet using openpyxl or similar library
+            from openpyxl import Workbook
+            wb = Workbook()
+            ws = wb.active
+            ws.title = f"{student.name}'s Results"
 
-        # Convert data to a DataFrame
-        df = pd.DataFrame(data)
-
-        # Convert DataFrame to Excel format in memory
-        output = BytesIO()
-        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-            df.to_excel(writer, index=False, sheet_name='Results')
-
-        # Prepare the response to download the file
-        output.seek(0)
-        response = HttpResponse(
-            output,
-            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        )
-        response['Content-Disposition'] = 'attachment; filename=student_results.xlsx'
-        return response
+            # Add headers
+            ws.append(["Course", "Score", "Grade", "Uploaded At"])
+            
+            # Add data rows
+            for result in results:
+                ws.append([result.course.name, result.score, result.grade, result.uploaded_at])
+            
+            # Save the spreadsheet to the response
+            wb.save(response)
+            return response
+        except Student.DoesNotExist:
+            return Response({"message": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
 class UploadResultsView(APIView):
