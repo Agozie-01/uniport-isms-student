@@ -5,33 +5,25 @@ def sidebar_menu(request):
         {
             "name": "Dashboard",
             "items": [
-                {"name": "Overview", "link": reverse('dashboard_home'), "icon": "grid"},
-            ]
+                {"name": "Overview", "link": reverse('home'), "icon": "grid"},  # Dashboard icon
+            ],
         },
         {
-            "name": "Result Management",
+            "name": "Management",
             "items": [
-                {"name": "Upload Results", "link": reverse('results_upload'), "icon": "upload"},
-                {"name": "View Results", "link": reverse('results_view'), "icon": "eye"},
-                {"name": "Result Analysis", "link": reverse('results_analysis'), "icon": "bar-chart-2"},
-                {"name": "Generate Spreadsheet", "link": reverse('results_spreadsheet_generate'), "icon": "file-text"},
-            ]
-        },
-        {
-            "name": "Student Management",
-            "items": [
-                {"name": "Manage Students", "link": reverse('students_manage'), "icon": "users"},
-                {"name": "Student Registration", "link": reverse('student_registration'), "icon": "user-plus"},
-                {"name": "Student List", "link": reverse('students'), "icon": "list"},
-            ]
+                {"name": "Results", "link": reverse('results_view'), "icon": "file-text"},  # Results icon
+                {"name": "Students", "link": reverse('students_page'), "icon": "users"},  # students_page icon
+                {"name": "Departments", "link": reverse('departments_page'), "icon": "layers"},  # Departments icon
+                {"name": "Semesters", "link": reverse('semesters_page'), "icon": "calendar"},  # Semesters icon
+                {"name": "Sessions", "link": reverse('sessions_page'), "icon": "clock"},  # Sessions icon
+            ],
         },
         {
             "name": "Settings",
             "items": [
-                {"name": "System Settings", "link": reverse('settings_system'), "icon": "settings"},
-                {"name": "User Profile", "link": reverse('settings_profile'), "icon": "user"},
-                #{"name": "Log Out", "link": "#", "icon": "log-out"},
-            ]
+                {"name": "System", "link": reverse('settings_system'), "icon": "settings"},  # System settings icon
+                {"name": "Profile", "link": reverse('settings_profile'), "icon": "user"},  # Profile icon
+            ],
         },
     ]
     

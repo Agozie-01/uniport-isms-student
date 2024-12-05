@@ -16,12 +16,14 @@ from .views import (
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
+    TokenBlacklistView
 )
 
 urlpatterns = [
     # Authentication endpoints
     re_path(r'^token/?$', TokenObtainPairView.as_view(), name='auth_token'),  # Optional trailing slash
     re_path(r'^token/refresh/?$', TokenRefreshView.as_view(), name='auth_token_refresh'),  # Optional trailing slash
+    re_path(r'^token/logout/?$', TokenBlacklistView.as_view(), name='auth_token_logout'),
 
     # Student endpoints
     re_path(r'^students/?$', StudentView.as_view(), name='students'),  # Optional trailing slash

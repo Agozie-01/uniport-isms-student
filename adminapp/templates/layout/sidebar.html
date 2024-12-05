@@ -3,7 +3,7 @@
 
 <nav id="sidebar" class="sidebar js-sidebar">
     <div class="sidebar-content js-simplebar">
-        <a class="sidebar-brand" href="{% url 'dashboard_home' %}">
+        <a class="sidebar-brand" href="{% url 'home' %}">
             <img src="{% static 'img/logo.png' %}" alt="Logo" style="max-width: 64px; margin-left: 3.5rem" />
         </a>
 
@@ -28,12 +28,13 @@
 
         <div class="sidebar-cta">
             <div class="sidebar-cta-content">
-                <strong class="d-inline-block mb-2 text-gray">PETER ERHUNMWUNSE</strong>
-                <div class="mb-3 text-sm">
-                    Staff ID: U46784747478
+                <strong x-show="user" class="d-inline-block mb-2 text-gray" x-text="`${user.first_name} ${user.last_name}`"></strong>
+
+                <div class="mb-3 text-sm" x-show="user?.staff_id">
+                    Staff ID: <span x-text="user?.staff_id"></span>
                 </div>
-                <div class="d-grid">
-                    <a href="#" class="btn btn-primary">Logout</a>
+                <div class="d-grid" x-data="logout()">
+                    <a href="#" class="btn btn-primary" @click="sendLogout">Logout</a>
                 </div>
             </div>
         </div>

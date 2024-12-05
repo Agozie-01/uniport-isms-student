@@ -67,4 +67,26 @@ const DataStore = {
   unset(key) {
     storage.removeItem(key);
   },
+
+  clearAll() {
+    storage.clear();
+  },
+
+  clearByKeys(keys) {
+    // Ensure the input is an array
+    if (!Array.isArray(keys)) {
+        console.error("Error: Keys must be provided as an array.");
+        return;
+    }
+
+    // Loop through the keys and remove each one
+    keys.forEach((key) => {
+        if (localStorage.getItem(key) !== null) {
+            localStorage.removeItem(key);
+            console.log(`Key "${key}" removed from localStorage.`);
+        } else {
+            console.warn(`Key "${key}" does not exist in localStorage.`);
+        }
+    });
+  }
 };

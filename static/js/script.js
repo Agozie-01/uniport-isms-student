@@ -52,6 +52,45 @@ window.recentActivities = function() {
   };
 };
 
+window.logout = function() {
+  return {
+      // Method to fetch recent activities from the API
+      async sendLogout() {
+          await dispatchRequest("logout", "POST", "/api/token/logout", {refresh: TokenStore.getRefreshToken()});
+          TokenStore.clearTokens();
+
+          toastSuccess("Session has been logged out successfully", "center", function() {
+            window.location.href = "/";
+          });
+      }
+  };
+};
+
+window.userDetails = function() {
+  return {
+      user: {
+
+      }, // Holds the list of activities
+
+      // Method to fetch recent activities from the API
+      async fetchUserDetails() {
+          try {
+              // Fetch recent activities from the API
+              const user = await dispatchRequest("fetchUserDetails", "GET", "/api/user/me");
+              
+              // Map the response data to displayable activity structure
+              this.user = user;
+
+          } catch (error) {
+              // Display an alert with a more descriptive error message
+              console.error("Error fetching user details:", error);
+              alert("Failed to load user details. Please try again.");
+          }
+      }
+  };
+};
+
+
 
 
 

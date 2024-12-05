@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Students{% endblock %}
+
+{% block page_title %}
+<!-- Page Title with Animation -->
+<h1 class="h3 mb-4 animate__animated animate__fadeIn">Students</h1>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-3">
+    <!-- Search and Filters with Animation -->
+    <div class="col-md-6 animate__animated animate__fadeIn mb-2">
+        <div class="input-group">
+            <div class="form-outline" data-mdb-input-init>
+                <input type="search" id="form1" class="form-control" placeholder="Search students..." />
+                <label class="form-label" for="form1">Search</label>
+            </div>
+            <button type="button" class="btn btn-light" data-mdb-ripple-init>
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Search and Bulk Upload or New Student -->
+<div class="row mb-4">
+    <!-- Bulk Upload and Add Student Button with Animation -->
+    <div class="text-end animate__animated animate__fadeIn">
+        <div class="btn-group" role="group">
+            <!-- Bulk Upload Button -->
+            <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#bulkUploadModal">
+                <i class="fas fa-file-upload"></i> Bulk Upload
+            </button>
+            <!-- Add Student Button -->
+            <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+                <i class="fas fa-user-plus"></i> Add Student
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Students Table with Animation -->
+<div class="row">
+    <div class="col-12 animate__animated animate__fadeIn">
+        <div class="card">
+            <table class="table table-hover my-0">
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Full Name</th>
+                        <th class="d-none d-md-table-cell">Department</th>
+                        <th class="d-none d-md-table-cell">Level</th>
+                        <th class="d-none d-md-table-cell">Email</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>U2023001</td>
+                        <td>Jane Doe</td>
+                        <td class="d-none d-md-table-cell">Computer Science</td>
+                        <td class="d-none d-md-table-cell">200</td>
+                        <td class="d-none d-md-table-cell">jane.doe@example.com</td>
+                        <td>Active</td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-light dropdown-toggle" type="button" id="actionMenu1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Actions
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="actionMenu1">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-pencil-alt"></i> Update Details</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-trash-alt"></i> Delete</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-ban"></i> Block</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-export"></i> Generate Spreadsheet</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>U2023002</td>
+                        <td>John Smith</td>
+                        <td class="d-none d-md-table-cell">Electrical Engineering</td>
+                        <td class="d-none d-md-table-cell">300</td>
+                        <td class="d-none d-md-table-cell">john.smith@example.com</td>
+                        <td>Inactive</td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-light dropdown-toggle" type="button" id="actionMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Actions
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="actionMenu2">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-pencil-alt"></i> Update Details</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-trash-alt"></i> Delete</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-ban"></i> Block</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-file-export"></i> Generate Spreadsheet</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- Add more rows as needed -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Bulk Upload -->
+<div class="modal fade" id="bulkUploadModal" tabindex="-1" aria-labelledby="bulkUploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bulkUploadModalLabel">Bulk Upload Students</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="#" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="bulkFile" class="form-label">Upload File</label>
+                        <input class="form-control" type="file" id="bulkFile" name="bulkFile" required />
+                    </div>
+                    <button type="submit" class="btn btn-secondary">Upload</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Add Student -->
+<div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addStudentModalLabel">Add New Student</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="#" method="POST">
+                    <div class="mb-3">
+                        <label for="studentName" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="studentName" name="studentName" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="studentDept" class="form-label">Department</label>
+                        <input type="text" class="form-control" id="studentDept" name="studentDept" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="studentLevel" class="form-label">Level</label>
+                        <input type="number" class="form-control" id="studentLevel" name="studentLevel" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="studentEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="studentEmail" name="studentEmail" required />
+                    </div>
+                    <button type="submit" class="btn btn-outline-secondary">Add Student</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
