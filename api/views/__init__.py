@@ -1,5 +1,6 @@
 from .admin import AdminView
 from .student import StudentView
+from .upload_student import UploadStudentsView
 from .department import DepartmentView
 from .dashboard_stats import DashboardStatsView
 from .recent_activity import RecentActivitiesView

@@ -97,26 +97,25 @@ window.studentList = function() {
     searchTerm: '',
     page: 1, // Current page for pagination
     totalPages: 1, // Total number of pages for pagination
+    loading: false,
 
     // Method to fetch student records
     async fetchRecords() {
+      this.loading = true;
       try {
         const response = await dispatchRequest("studentList", "GET", `/api/students?page=${this.page}&search_term=${this.searchTerm}`);
-        
-        // Assuming the API response follows the format:
-        // {
-        //   "count": 3,
-        //   "next": null,
-        //   "previous": null,
-        //   "results": [ ... ]
-        // }
-        
         this.students = response.results; // Students list
         this.totalPages = Math.ceil(response.count / 10); // Total pages based on count and page size (10 per page)
+        
+        setTimeout(() => {
+          this.loading = false;
+        }, 1000)
 
       } catch (error) {
+        this.loading = false;
         console.error("Error fetching student records:", error);
       }
+
     },
 
     // Pagination methods
@@ -135,6 +134,54 @@ window.studentList = function() {
     }
   };
 };
+
+
+window.uploadStudent = function() {
+  return {
+    loading: false,
+    file: null,
+
+    // Handle file change (on file selection)
+    handleFileChange(event) {
+      this.file = event.target.files[0];
+      console.log("Selected file:", this.file); // Debugging log
+    },
+
+    // Method to upload student records from the Excel file
+    async uploadFile() {
+      if (!this.file) {
+        alert("Please select a file first.");
+        return;
+      }
+
+      this.loading = true;
+
+      try {
+        // Prepare form data
+        const formData = new FormData();
+        formData.append("file", this.file);
+
+        // Send the request
+        const response = await dispatchRequest(
+          "uploadStudentsFromFile",
+          "POST",
+          `/api/student/upload`,
+          formData
+        );
+
+        toastSuccess("Student records uploaded successfully!", "center", function() {
+          this.loading = false;
+        });
+
+      } catch (error) {
+        toastError("Error uploading student records: " + error, "center");
+        console.error("Error uploading student records:", error);
+        this.loading = false;
+      }
+    },
+  };
+};
+
 
 
 

@@ -1,0 +1,32 @@
+<!-- Modal for Add Student -->
+<div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addStudentModalLabel">Add New Student</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="#" method="POST">
+                    <div class="mb-3">
+                        <label for="studentName" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="studentName" name="studentName" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="studentDept" class="form-label">Department</label>
+                        <input type="text" class="form-control" id="studentDept" name="studentDept" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="studentLevel" class="form-label">Level</label>
+                        <input type="number" class="form-control" id="studentLevel" name="studentLevel" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="studentEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="studentEmail" name="studentEmail" required />
+                    </div>
+                    <button type="submit" class="btn btn-outline-secondary">Add Student</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -13,7 +13,8 @@ from .views import (
     SessionView,
     UploadResultsView,
     FetchResultsView,
-    GenerateSpreadsheetView
+    GenerateSpreadsheetView,
+    UploadStudentsView
 )
 
 from rest_framework_simplejwt.views import (
@@ -31,6 +32,7 @@ urlpatterns = [
     # Student endpoints
     re_path(r'^students/?$', StudentView.as_view(), name='students'),  # Optional trailing slash
     re_path(r'^students/(?P<student_id>\d+)/?$', StudentView.as_view(), name='student_detail'),  # Optional trailing slash
+    re_path(r"^students/upload/?$", UploadStudentsView.as_view(), name="upload_students"),
 
     # Admin endpoints
     re_path(r'^admins/?$', AdminView.as_view(), name='admin_new'),  # Optional trailing slash

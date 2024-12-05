@@ -61,6 +61,16 @@
     font-size: 0.9em;
 }
 
+.btn-group, .btn-group-vertical {
+    --mdb-btn-box-shadow: none;
+    --mdb-btn-hover-box-shadow: none;
+    --mdb-btn-focus-box-shadow: none;
+    --mdb-btn-active-box-shadow: none;
+    --mdb-btn-group-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    box-shadow: var(--mdb-btn-box-shadow);
+    transition: var(--mdb-btn-group-transition);
+  }
+
 @media (min-width: 992px) {
     .content {
         padding: 1rem 3rem 1.5rem;
