@@ -109,13 +109,24 @@ async function getRequest(url, headers = {}) {
 
 async function postRequest(url, data, headers = {}) {
   try {
+    let body;
+    let contentHeaders = {};
+
+    // Check if `data` is an instance of FormData
+    if (data instanceof FormData) {
+      body = data; // Use FormData as is
+    } else {
+      body = JSON.stringify(data); // Convert other data types to JSON
+      contentHeaders["Content-Type"] = "application/json";
+    }
+
     const response = await fetch(url, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        ...headers,
+        ...contentHeaders, // Automatically set Content-Type based on data type
+        ...headers, // Add additional headers, like Authorization
       },
-      body: JSON.stringify(data),
+      body: body,
     });
 
     if (!response.ok) {
@@ -128,6 +139,7 @@ async function postRequest(url, data, headers = {}) {
     throw error;
   }
 }
+
 
 async function putRequest(url, data, headers = {}) {
   try {

@@ -3,8 +3,9 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 import pandas as pd
-
+from rest_framework.parsers import MultiPartParser
 from ..models import Student, Department
+
 
 
 class UploadStudentsView(APIView):
@@ -12,6 +13,7 @@ class UploadStudentsView(APIView):
     Endpoint to upload or update student records from a spreadsheet.
     """
     permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser]
 
     def post(self, request):
         file = request.FILES.get("file")

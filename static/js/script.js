@@ -136,15 +136,15 @@ window.studentList = function() {
 };
 
 
-window.uploadStudent = function() {
+window.uploadStudent = function () {
   return {
     loading: false,
     file: null,
+    errors: [], // To store error messages
 
     // Handle file change (on file selection)
     handleFileChange(event) {
       this.file = event.target.files[0];
-      console.log("Selected file:", this.file); // Debugging log
     },
 
     // Method to upload student records from the Excel file
@@ -155,6 +155,7 @@ window.uploadStudent = function() {
       }
 
       this.loading = true;
+      this.errors = []; // Clear previous errors
 
       try {
         // Prepare form data
@@ -165,27 +166,47 @@ window.uploadStudent = function() {
         const response = await dispatchRequest(
           "uploadStudentsFromFile",
           "POST",
-          `/api/student/upload`,
+          `/api/students/upload`,
           formData
         );
 
-        toastSuccess("Student records uploaded successfully!", "center", function() {
-          this.loading = false;
-        });
+        // Check if there are any errors in the response
+        if (response.errors && response.errors.length > 0) {
+          this.errors = response.errors; // Capture errors from the response
+          console.log("Upload errors:", this.errors);
+          
+          // Combine all errors into a single message for display
+          let errorMessage = "Some records failed to upload. Errors:\n";
+          this.errors.forEach(error => {
+            errorMessage += `${error.error} for matric number ${error.matric_number || 'unknown'}\n`;
+          });
+
+          // Show the error message first
+          toastError(errorMessage, "right");
+        }
+
+        // If no errors, show success message
+        if (!this.errors.length) {
+          toastSuccess("Student records uploaded successfully!", "center", () => {
+            this.loading = false;
+          });
+        }
 
       } catch (error) {
-        toastError("Error uploading student records: " + error, "center");
-        console.error("Error uploading student records:", error);
+        // Check if server sent specific error messages
+        if (error.response && error.response.data && error.response.data.errors) {
+          this.errors = error.response.data.errors; // Capture errors from server response
+          console.log("Upload errors:", this.errors);
+        } else {
+          toastError(
+            error?.response?.data?.error || "An unexpected error occurred.",
+            "center"
+          );
+          console.log("Error uploading student records:", error);
+        }
+      } finally {
         this.loading = false;
       }
     },
   };
 };
-
-
-
-
-
-
-
-
