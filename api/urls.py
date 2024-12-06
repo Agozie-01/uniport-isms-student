@@ -14,7 +14,10 @@ from .views import (
     UploadResultsView,
     FetchResultsView,
     GenerateSpreadsheetView,
-    UploadStudentsView
+    UploadStudentsView,
+    UploadSemestersView,
+    UploadDepartmentsView,
+    UploadSessionsView,
 )
 
 from rest_framework_simplejwt.views import (
@@ -42,6 +45,7 @@ urlpatterns = [
     # Departments
     re_path(r'^departments/?$', DepartmentView.as_view(), name='departments'),  # List/Create
     re_path(r'^departments/(?P<department_id>\d+)/?$', DepartmentView.as_view(), name='department_detail'),  # Retrieve/Update/Delete
+    re_path(r"^departments/upload/?$", UploadDepartmentsView.as_view(), name="upload_departments"),
 
     # Dashboard
     re_path(r'^dashboard/stats/?$', DashboardStatsView.as_view(), name='dashboard'),
@@ -57,10 +61,12 @@ urlpatterns = [
     # Semesters
     re_path(r'^semesters/?$', SemesterView.as_view(), name='semester_list_create'),  # List all semesters and create new one
     re_path(r'^semesters/(?P<semester_id>\d+)/?$', SemesterView.as_view(), name='semester_detail'),  # Get, update, and delete a specific semester
+    re_path(r"^semesters/upload/?$", UploadSemestersView.as_view(), name="upload_semesters"),
 
     # Sessions
     re_path(r'^sessions/?$', SessionView.as_view(), name='session_list_create'),  # List all sessions and create new one
     re_path(r'^sessions/(?P<session_id>\d+)/?$', SessionView.as_view(), name='session_detail'),  # Get, update, and delete specific sessions
+    re_path(r"^sessions/upload/?$", UploadSessionsView.as_view(), name="upload_sessions"),
 
     # Result Management
     re_path(r"^results/?$", FetchResultsView.as_view(), name="fetch_results"),

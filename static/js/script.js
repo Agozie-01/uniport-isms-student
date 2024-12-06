@@ -306,3 +306,86 @@ window.addStudent = function () {
     },
   };
 };
+
+
+
+window.semesterList = function() {
+  return {
+      semesters: [], // Initialize the semesters array
+      loading: false,
+      searchTerm: '',
+      page: 1, // You can set a default page number if needed
+      async fetchRecords() {
+          this.loading = true;
+
+          try {
+              const response = await dispatchRequest(
+                  "semesterList2",  // This would be the action name or identifier
+                  "GET",
+                  `/api/semesters?page=${this.page}&search_term=${this.searchTerm}`
+              );
+
+              if (response && response.results) {
+                  this.semesters = response.results;  // Assign the fetched data to semesters
+              } else {
+                  this.semesters = [];  // Ensure semesters is set to an empty array if no results
+              }
+          } catch (error) {
+              console.error("Error fetching semesters:", error);
+              this.semesters = []; // Set to empty array on error
+          } finally {
+              this.loading = false;  // Set loading to false after the request completes
+          }
+      }
+  };
+}
+
+
+window.addSemester = function() {
+  return {
+    semesterData: {
+      name: "",
+      description: "",
+      startDate: "",
+      endDate: "",
+      isActive: true,
+    },
+    errors: {},
+    loading: false,
+    successMessage: "",
+    
+    async addSemester() {
+      this.loading = true;
+      this.errors = {};
+      this.successMessage = "";
+
+      try {
+        // Sending the POST request to add a semester using dispatchRequest
+        const response = await dispatchRequest("semesterList", "POST", "/api/semesters/", {
+          name: this.semesterData.name,
+          description: this.semesterData.description,
+          start_date: this.semesterData.startDate,
+          end_date: this.semesterData.endDate,
+          is_active: this.semesterData.isActive,
+        });
+
+        // On success, update success message and reset form data
+        this.successMessage = "Semester added successfully!";
+        this.semesterData = {
+          name: "",
+          description: "",
+          startDate: "",
+          endDate: "",
+          isActive: true,
+        };
+
+      } catch (error) {
+        // Handle any errors that occur during the request
+        this.errors = error.response?.data || { general: "An error occurred. Please try again." };
+      } finally {
+        // Always reset the loading state
+        this.loading = false;
+      }
+    },
+  };
+}

@@ -2,8 +2,15 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser
+from rest_framework.pagination import PageNumberPagination
+from django.db.models import Q  # For filtering with OR conditions
 from ..models import Session
 from ..serializers import SessionSerializer
+
+class SessionPagination(PageNumberPagination):
+    page_size = 10  # Customize the page size (number of sessions per page)
+    page_size_query_param = 'page_size'
+    max_page_size = 100  # Optional: maximum number of sessions per page
 
 class SessionView(APIView):
     permission_classes = [IsAdminUser]
@@ -20,8 +27,10 @@ class SessionView(APIView):
 
     def get(self, request, session_id=None):
         """
-        Retrieve a single session by ID or list all sessions.
+        Retrieve a single session by ID or list all sessions with pagination and search.
         """
+        search_term = request.GET.get('search_term', '')  # Get the search query parameter
+        
         if session_id:
             try:
                 session = Session.objects.get(pk=session_id)
@@ -30,10 +39,19 @@ class SessionView(APIView):
             except Session.DoesNotExist:
                 return Response({"error": "Session not found"}, status=status.HTTP_404_NOT_FOUND)
         else:
-            # List all sessions
+            # List all sessions with pagination and search
             sessions = Session.objects.all()
-            serializer = SessionSerializer(sessions, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+
+            if search_term:
+                sessions = sessions.filter(
+                    Q(name__icontains=search_term) |  # Search by session name
+                    Q(is_active__icontains=search_term)  # Search by session description
+                )
+
+            paginator = SessionPagination()
+            paginated_sessions = paginator.paginate_queryset(sessions, request)
+            serializer = SessionSerializer(paginated_sessions, many=True)
+            return paginator.get_paginated_response(serializer.data)
 
     def put(self, request, session_id=None):
         """

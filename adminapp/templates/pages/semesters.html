@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Semesters{% endblock %}
+
+{% block page_title %}
+<!-- Page Title -->
+<h1 class="h3 mb-4 animate__animated animate__fadeIn">Semesters</h1>
+{% endblock %}
+
+{% block content %}
+<div x-data="semesterList()">
+    <!-- Search Bar -->
+    <div class="row mb-3">
+        <div class="col-md-6 animate__animated animate__fadeIn mb-2">
+            <div class="input-group">
+                <div class="form-outline" data-mdb-input-init>
+                    <input type="search" x-model="searchTerm" @input.debounce.500ms="fetchRecords" class="form-control" placeholder="Search Semesters..." />
+                    <label class="form-label">Search</label>
+                </div>
+                <button type="button" class="btn btn-light" @click="fetchRecords" :disabled="loading">
+                    <template x-if="!loading">
+                        <i class="fas fa-search"></i>
+                    </template>
+                    <template x-if="loading">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    </template>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Upload and Add New Semester -->
+    <div class="row mb-4">
+        <div class="text-end animate__animated animate__fadeIn">
+            <div class="btn-group" role="group">
+                <!-- Bulk Upload Button -->
+                <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#bulkUploadModal">
+                    <i class="fas fa-file-upload"></i> Bulk Upload
+                </button>
+                <!-- Add Semester Button -->
+                <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addSemesterModal">
+                    <i class="fas fa-plus"></i> Add Semester
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Semesters Table -->
+    <div x-init="fetchRecords()">
+        <div class="row">
+            <div class="col-12 animate__animated animate__fadeIn">
+                <div class="card">
+                    <table class="table table-hover my-0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Active</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template x-for="semester in semesters" :key="semester.id">
+                                <tr>
+                                    <td x-text="semester.name"></td>
+                                    <td x-text="semester.description || '-'"></td>
+                                    <td x-text="semester.start_date"></td>
+                                    <td x-text="semester.end_date"></td>
+                                    <td>
+                                        <span x-text="semester.is_active ? 'Yes' : 'No'" class="badge" :class="semester.is_active ? 'bg-success' : 'bg-danger'"></span>
+                                    </td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Actions
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-pencil-alt"></i> Update Details</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-trash-alt"></i> Delete</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+                            <tr x-show="semesters.length === 0 && !loading">
+                                <td colspan="6" class="text-center p-5">
+                                    <i class="fas fa-folder-open fa-3x text-muted"></i>
+                                    <p class="mt-3 text-muted">No semesters found.</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include "components/upload_semester_modal.html" %}
+{% include "components/add_semester_modal.html" %}
+
+{% endblock %}

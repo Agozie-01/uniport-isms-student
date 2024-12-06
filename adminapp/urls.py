@@ -12,9 +12,9 @@ urlpatterns = [
 
     # Management Routes
     re_path(r'^students/?$', views.students, name='students_page'),
-    re_path(r'^departments/?$', views.students, name='departments_page'),
-    re_path(r'^semesters/?$', views.students, name='semesters_page'),
-    re_path(r'^sessions/?$', views.students, name='sessions_page'),
+    re_path(r'^departments/?$', views.departments, name='departments_page'),
+    re_path(r'^semesters/?$', views.semesters, name='semesters_page'),
+    re_path(r'^sessions/?$', views.sessions, name='sessions_page'),
 
     # Settings Routes
     re_path(r'^settings/system/?$', views.home, name='settings_system'),

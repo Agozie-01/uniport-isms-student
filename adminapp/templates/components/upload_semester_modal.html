@@ -1,0 +1,35 @@
+<!-- Modal for Bulk Upload -->
+<div x-data="uploadSemester()" class="modal fade" id="bulkUploadModal" tabindex="-1" aria-labelledby="bulkUploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bulkUploadModalLabel">Bulk Upload Semesters</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Upload Form -->
+                <form @submit.prevent="uploadFile" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="bulkFile" class="form-label">Upload File</label>
+                        <input 
+                            class="form-control" 
+                            type="file" 
+                            id="bulkFile" 
+                            x-ref="fileInput" 
+                            @change="handleFileChange" 
+                            required 
+                        />
+                    </div>
+
+                    <!-- Upload Button with Loading Spinner -->
+                    <button type="submit" class="btn btn-secondary" :disabled="loading">
+                        <span x-show="!loading">Upload</span>
+                        <span x-show="loading">
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Uploading...
+                        </span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

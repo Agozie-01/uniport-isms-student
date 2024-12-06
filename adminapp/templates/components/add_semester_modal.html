@@ -1,0 +1,64 @@
+<!-- Modal for Add Semester -->
+<div x-data="addSemester()" class="modal fade" id="addSemesterModal" tabindex="-1" aria-labelledby="addSemesterModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addSemesterModalLabel">Add New Semester</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form @submit.prevent="addSemester">
+                    <!-- Display general error if any -->
+                    <div x-show="errors?.general" class="alert alert-danger">
+                        <span x-text="errors?.general"></span>
+                    </div>
+
+                    <!-- Semester Name -->
+                    <div class="mb-3">
+                        <label for="semesterName" class="form-label">Semester Name</label>
+                        <input type="text" class="form-control" id="semesterName" x-model="semesterData.name" :class="{'is-invalid': errors?.name}" required />
+                        <div x-show="errors?.name" class="invalid-feedback" x-text="errors?.name"></div>
+                    </div>
+
+                    <!-- Semester Description -->
+                    <div class="mb-3">
+                        <label for="semesterDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="semesterDescription" x-model="semesterData.description" rows="3" :class="{'is-invalid': errors?.description}"></textarea>
+                        <div x-show="errors?.description" class="invalid-feedback" x-text="errors?.description"></div>
+                    </div>
+
+                    <!-- Start Date -->
+                    <div class="mb-3">
+                        <label for="startDate" class="form-label">Start Date</label>
+                        <input type="date" class="form-control" id="startDate" x-model="semesterData.startDate" :class="{'is-invalid': errors?.start_date}" required />
+                        <div x-show="errors?.start_date" class="invalid-feedback" x-text="errors?.start_date"></div>
+                    </div>
+
+                    <!-- End Date -->
+                    <div class="mb-3">
+                        <label for="endDate" class="form-label">End Date</label>
+                        <input type="date" class="form-control" id="endDate" x-model="semesterData.endDate" :class="{'is-invalid': errors?.end_date}" required />
+                        <div x-show="errors?.end_date" class="invalid-feedback" x-text="errors?.end_date"></div>
+                    </div>
+
+                    <!-- Is Active -->
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="isActive" x-model="semesterData.isActive" />
+                        <label class="form-check-label" for="isActive">Is Active</label>
+                    </div>
+
+                    <br />
+                    <button type="submit" class="btn btn-secondary" :disabled="loading">
+                        <span x-show="loading">Adding...</span>
+                        <span x-show="!loading">Add Semester</span>
+                    </button>
+                </form>
+
+                <!-- Success Message -->
+                <div x-show="successMessage" class="alert alert-success mt-3">
+                    <span x-text="successMessage"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
