@@ -389,3 +389,465 @@ window.addSemester = function() {
     },
   };
 }
+
+
+window.uploadSemester = function () {
+  return {
+    loading: false,
+    file: null,
+    errors: [], // To store error messages
+
+    // Handle file change (on file selection)
+    handleFileChange(event) {
+      this.file = event.target.files[0];
+    },
+
+    // Method to upload semester records from the Excel file
+    async uploadFile() {
+      if (!this.file) {
+        alert("Please select a file first.");
+        return;
+      }
+
+      this.loading = true;
+      this.errors = []; // Clear previous errors
+
+      try {
+        // Prepare form data
+        const formData = new FormData();
+        formData.append("file", this.file);
+
+        // Send the request
+        const response = await dispatchRequest(
+          "uploadSemestersFromFile",
+          "POST",
+          `/api/semesters/upload`,
+          formData
+        );
+
+        // Check if there are any errors in the response
+        if (response.errors && response.errors.length > 0) {
+          this.errors = response.errors; // Capture errors from the response
+          console.log("Upload errors:", this.errors);
+
+          // Combine all errors into a single message for display
+          let errorMessage = "Some records failed to upload. Errors:\n";
+          this.errors.forEach((error) => {
+            errorMessage += `${error.error} for semester ${error.name || "unknown"}\n`;
+          });
+
+          // Show the error message
+          toastError(errorMessage, "right");
+        }
+
+        // If no errors, show success message
+        if (!this.errors.length) {
+          toastSuccess("Semester records uploaded successfully!", "center", () => {
+            this.loading = false;
+          });
+        }
+
+      } catch (error) {
+        // Check if server sent specific error messages
+        if (error.response && error.response.data && error.response.data.errors) {
+          this.errors = error.response.data.errors; // Capture errors from server response
+          console.log("Upload errors:", this.errors);
+        } else {
+          toastError(
+            error?.response?.data?.error || "An unexpected error occurred.",
+            "center"
+          );
+          console.log("Error uploading semester records:", error);
+        }
+      } finally {
+        this.loading = false;
+      }
+    },
+  };
+};
+
+
+window.uploadDepartment = function () {
+  return {
+    loading: false,
+    file: null,
+    errors: [], // To store error messages
+
+    // Handle file change (on file selection)
+    handleFileChange(event) {
+      this.file = event.target.files[0];
+    },
+
+    // Method to upload department records from the Excel file
+    async uploadFile() {
+      if (!this.file) {
+        alert("Please select a file first.");
+        return;
+      }
+
+      this.loading = true;
+      this.errors = []; // Clear previous errors
+
+      try {
+        // Prepare form data
+        const formData = new FormData();
+        formData.append("file", this.file);
+
+        // Send the request
+        const response = await dispatchRequest(
+          "uploadDepartmentsFromFile",
+          "POST",
+          `/api/departments/upload`,
+          formData
+        );
+
+        // Check if there are any errors in the response
+        if (response.errors && response.errors.length > 0) {
+          this.errors = response.errors; // Capture errors from the response
+          console.log("Upload errors:", this.errors);
+
+          // Combine all errors into a single message for display
+          let errorMessage = "Some records failed to upload. Errors:\n";
+          this.errors.forEach((error) => {
+            errorMessage += `${error.error} for department ${error.name || "unknown"}\n`;
+          });
+
+          // Show the error message
+          toastError(errorMessage, "right");
+        }
+
+        // If no errors, show success message
+        if (!this.errors.length) {
+          toastSuccess("Department records uploaded successfully!", "center", () => {
+            this.loading = false;
+          });
+        }
+
+      } catch (error) {
+        // Check if server sent specific error messages
+        if (error.response && error.response.data && error.response.data.errors) {
+          this.errors = error.response.data.errors; // Capture errors from server response
+          console.log("Upload errors:", this.errors);
+        } else {
+          toastError(
+            error?.response?.data?.error || "An unexpected error occurred.",
+            "center"
+          );
+          console.log("Error uploading department records:", error);
+        }
+      } finally {
+        this.loading = false;
+      }
+    },
+  };
+};
+
+window.departmentList = function() {
+  return {
+    departments: [], // Array to hold department data
+    searchTerm: '', // Search term for filtering departments
+    page: 1, // Current page for pagination
+    totalPages: 1, // Total number of pages for pagination
+    loading: false, // Loading state
+
+    // Method to fetch department records
+    async fetchRecords() {
+      this.loading = true;
+      try {
+        const response = await dispatchRequest("departmentList", "GET", `/api/departments?page=${this.page}&search_term=${this.searchTerm}`);
+        this.departments = response.results; // Department list
+        this.totalPages = Math.ceil(response.count / 10); // Total pages based on count and page size (10 per page)
+        
+        setTimeout(() => {
+          this.loading = false;
+        }, 1000); // Delay loading state for a better user experience
+
+      } catch (error) {
+        this.loading = false;
+        console.error("Error fetching department records:", error);
+      }
+    },
+
+    // Pagination methods
+    prevPage() {
+      if (this.page > 1) {
+        this.page--;
+        this.fetchRecords(); // Fetch new records for the previous page
+      }
+    },
+
+    nextPage() {
+      if (this.page < this.totalPages) {
+        this.page++;
+        this.fetchRecords(); // Fetch new records for the next page
+      }
+    }
+  };
+};
+
+
+window.addDepartment = function() {
+  return {
+    departmentData: {
+      name: "",  // Department name (e.g., "Computer Science")
+      description: "",  // A brief description of the department
+      isActive: true,  // Is the department active?
+      code: "",
+    },
+    errors: {},
+    loading: false,
+    successMessage: "",
+
+    async addDepartment() {
+      this.loading = true;
+      this.errors = {};
+      this.successMessage = "";
+    
+      try {
+        // Sending the POST request to add a department using dispatchRequest
+        const response = await dispatchRequest("departmentList", "POST", "/api/departments/", {
+          name: this.departmentData.name,
+          code: this.departmentData.code,
+          description: this.departmentData.description,
+          is_active: this.departmentData.isActive,
+        });
+    
+        // On success, update success message and reset form data
+        this.successMessage = "Department added successfully!";
+        this.departmentData = {
+          name: "",
+          description: "",
+          isActive: true,
+        };
+    
+      } catch (error) {
+        console.error("Error adding department:", error);  // Log the error for better visibility
+        // Handle any errors that occur during the request
+        this.errors = error.response?.data || { general: "An error occurred. Please try again." };
+    
+        // Optionally, display the error response in the console to further debug
+        if (error.response) {
+          console.log("API Error Response:", error.response.data);
+        }
+      } finally {
+        // Always reset the loading state
+        this.loading = false;
+      }
+    },
+  };
+}
+
+
+
+window.uploadSession = function () {
+  return {
+    loading: false,
+    file: null,
+    errors: [], // To store error messages
+
+    // Handle file change (on file selection)
+    handleFileChange(event) {
+      this.file = event.target.files[0];
+    },
+
+    // Method to upload session records from the Excel file
+    async uploadFile() {
+      if (!this.file) {
+        alert("Please select a file first.");
+        return;
+      }
+
+      this.loading = true;
+      this.errors = []; // Clear previous errors
+
+      try {
+        // Prepare form data
+        const formData = new FormData();
+        formData.append("file", this.file);
+
+        // Send the request
+        const response = await dispatchRequest(
+          "uploadSessionsFromFile",
+          "POST",
+          `/api/sessions/upload`,
+          formData
+        );
+
+        // Check if there are any errors in the response
+        if (response.errors && response.errors.length > 0) {
+          this.errors = response.errors; // Capture errors from the response
+          console.log("Upload errors:", this.errors);
+
+          // Combine all errors into a single message for display
+          let errorMessage = "Some records failed to upload. Errors:\n";
+          this.errors.forEach((error) => {
+            errorMessage += `${error.error} for session ${error.name || "unknown"}\n`;
+          });
+
+          // Show the error message
+          toastError(errorMessage, "right");
+        }
+
+        // If no errors, show success message
+        if (!this.errors.length) {
+          toastSuccess("Session records uploaded successfully!", "center", () => {
+            this.loading = false;
+          });
+        }
+
+      } catch (error) {
+        // Check if server sent specific error messages
+        if (error.response && error.response.data && error.response.data.errors) {
+          this.errors = error.response.data.errors; // Capture errors from server response
+          console.log("Upload errors:", this.errors);
+        } else {
+          toastError(
+            error?.response?.data?.error || "An unexpected error occurred.",
+            "center"
+          );
+          console.log("Error uploading session records:", error);
+        }
+      } finally {
+        this.loading = false;
+      }
+    },
+  };
+};
+
+window.sessionList = function() {
+  return {
+    sessions: [], // Array to hold session data
+    searchTerm: '', // Search term for filtering sessions
+    page: 1, // Current page for pagination
+    totalPages: 1, // Total number of pages for pagination
+    loading: false, // Loading state
+
+    // Method to fetch session records
+    async fetchRecords() {
+      this.loading = true;
+      try {
+        const response = await dispatchRequest("sessionList", "GET", `/api/sessions?page=${this.page}&search_term=${this.searchTerm}`);
+        this.sessions = response.results; // Session list
+        this.totalPages = Math.ceil(response.count / 10); // Total pages based on count and page size (10 per page)
+        
+        setTimeout(() => {
+          this.loading = false;
+        }, 1000); // Delay loading state for a better user experience
+
+      } catch (error) {
+        this.loading = false;
+        console.error("Error fetching session records:", error);
+      }
+    },
+
+    // Pagination methods
+    prevPage() {
+      if (this.page > 1) {
+        this.page--;
+        this.fetchRecords(); // Fetch new records for the previous page
+      }
+    },
+
+    nextPage() {
+      if (this.page < this.totalPages) {
+        this.page++;
+        this.fetchRecords(); // Fetch new records for the next page
+      }
+    }
+  };
+};
+
+
+window.addSession = function() {
+  return {
+    sessionData: {
+      name: "",  // Session name (e.g., "2023/2024")
+      semester: 1,  // The associated semester, e.g., 1
+      startDate: "",  // Start date of the session
+      endDate: "",  // End date of the session
+      isActive: true,  // Is the session active?
+    },
+    errors: {},
+    loading: false,
+    successMessage: "",
+
+    async addSession() {
+      this.loading = true;
+      this.errors = {};
+      this.successMessage = "";
+
+      try {
+        // Sending the POST request to add a session using dispatchRequest
+        const response = await dispatchRequest("sessionList", "POST", "/api/sessions/", {
+          name: this.sessionData.name,
+          semester: this.sessionData.semester,  // Add the semester value
+          start_date: this.sessionData.startDate,
+          end_date: this.sessionData.endDate,
+          is_active: this.sessionData.isActive,
+        });
+
+        // On success, update success message and reset form data
+        this.successMessage = "Session added successfully!";
+        this.sessionData = {
+          name: "",
+          semester: 1,  // Reset the semester back to the default value
+          startDate: "",
+          endDate: "",
+          isActive: true,
+        };
+
+      } catch (error) {
+        // Handle any errors that occur during the request
+        this.errors = error.response?.data || { general: "An error occurred. Please try again." };
+      } finally {
+        // Always reset the loading state
+        this.loading = false;
+      }
+    },
+  };
+}
+
+
+window.resultList = function() {
+  return {
+    results: [], // Array to hold the result data
+    searchTerm: '', // Search term for filtering results
+    page: 1, // Current page for pagination
+    totalPages: 1, // Total number of pages for pagination
+    loading: false, // Loading state
+
+    // Method to fetch result records
+    async fetchRecords() {
+      this.loading = true;
+      try {
+        const response = await dispatchRequest("resultList", "GET", `/api/results?page=${this.page}&search_term=${this.searchTerm}`);
+        this.results = response.results; // Result list
+        this.totalPages = Math.ceil(response.count / 10); // Total pages based on count and page size (10 per page)
+        
+        setTimeout(() => {
+          this.loading = false;
+        }, 1000); // Delay loading state for better user experience
+
+      } catch (error) {
+        this.loading = false;
+        console.error("Error fetching result records:", error);
+      }
+    },
+
+    // Pagination methods
+    prevPage() {
+      if (this.page > 1) {
+        this.page--;
+        this.fetchRecords(); // Fetch new records for the previous page
+      }
+    },
+
+    nextPage() {
+      if (this.page < this.totalPages) {
+        this.page++;
+        this.fetchRecords(); // Fetch new records for the next page
+      }
+    }
+  };
+};
+

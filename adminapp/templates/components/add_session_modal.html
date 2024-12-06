@@ -1,13 +1,13 @@
-<!-- Modal for Add Student -->
-<div x-data="addStudent()" class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+<!-- Modal for Add Session -->
+<div x-data="addSession()" class="modal fade" id="addSessionModal" tabindex="-1" aria-labelledby="addSessionModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addStudentModalLabel">Add New Student</h5>
+                <h5 class="modal-title" id="addSessionModalLabel">Add New Session</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form @submit.prevent="addStudent">
+                <form @submit.prevent="addSession">
                     <!-- Display general error if any -->
                     <div x-show="errors?.general" class="alert alert-danger">
                         <span x-text="errors?.general"></span>
@@ -15,51 +15,40 @@
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="firstName" class="form-label">First Name</label>
-                            <input type="text" class="form-control" id="firstName" x-model="studentData.firstName" :class="{'is-invalid': errors?.first_name}" required />
-                            <div x-show="errors?.first_name" class="invalid-feedback" x-text="errors?.first_name"></div>
+                            <label for="sessionName" class="form-label">Session Name</label>
+                            <input type="text" class="form-control" id="sessionName" x-model="sessionData.sessionName" :class="{'is-invalid': errors?.session_name}" required />
+                            <div x-show="errors?.session_name" class="invalid-feedback" x-text="errors?.session_name"></div>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="lastName" class="form-label">Last Name</label>
-                            <input type="text" class="form-control" id="lastName" x-model="studentData.lastName" :class="{'is-invalid': errors?.last_name}" required />
-                            <div x-show="errors?.last_name" class="invalid-feedback" x-text="errors?.last_name"></div>
+                            <label for="sessionYear" class="form-label">Session Year</label>
+                            <input type="number" class="form-control" id="sessionYear" x-model="sessionData.sessionYear" :class="{'is-invalid': errors?.session_year}" required />
+                            <div x-show="errors?.session_year" class="invalid-feedback" x-text="errors?.session_year"></div>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="studentEmail" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="studentEmail" x-model="studentData.email" :class="{'is-invalid': errors?.email}" required />
-                            <div x-show="errors?.email" class="invalid-feedback" x-text="errors?.email"></div>
+                            <label for="sessionStartDate" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="sessionStartDate" x-model="sessionData.sessionStartDate" :class="{'is-invalid': errors?.session_start_date}" required />
+                            <div x-show="errors?.session_start_date" class="invalid-feedback" x-text="errors?.session_start_date"></div>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="studentLevel" class="form-label">Level</label>
-                            <input type="number" class="form-control" id="studentLevel" x-model="studentData.level" :class="{'is-invalid': errors?.level}" required />
-                            <div x-show="errors?.level" class="invalid-feedback" x-text="errors?.level"></div>
+                            <label for="sessionEndDate" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="sessionEndDate" x-model="sessionData.sessionEndDate" :class="{'is-invalid': errors?.session_end_date}" required />
+                            <div x-show="errors?.session_end_date" class="invalid-feedback" x-text="errors?.session_end_date"></div>
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="matricNumber" class="form-label">Matric Number</label>
-                        <input type="text" class="form-control" id="matricNumber" x-model="studentData.matricNumber" :class="{'is-invalid': errors?.matric_number}" required />
-                        <div x-show="errors?.matric_number" class="invalid-feedback" x-text="errors?.matric_number"></div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="isActive" x-model="sessionData.isActive" :class="{'is-invalid': errors?.is_active}" />
+                        <label class="form-check-label" for="isActive">Is Active</label>
+                        <div x-show="errors?.is_active" class="invalid-feedback" x-text="errors?.is_active"></div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="studentDept" class="form-label">Department</label>
-                        <input type="text" class="form-control" id="studentDept" x-model="studentData.department" :class="{'is-invalid': errors?.department}" required />
-                        <div x-show="errors?.department" class="invalid-feedback" x-text="errors?.department"></div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="dateOfBirth" class="form-label">Date of Birth</label>
-                        <input type="date" class="form-control" id="dateOfBirth" x-model="studentData.dateOfBirth" :class="{'is-invalid': errors?.date_of_birth}" required />
-                        <div x-show="errors?.date_of_birth" class="invalid-feedback" x-text="errors?.date_of_birth"></div>
-                    </div>
                     <br />
                     <button type="submit" class="btn btn-secondary" :disabled="loading">
                         <span x-show="loading">Adding...</span>
-                        <span x-show="!loading">Add Student</span>
+                        <span x-show="!loading">Add Session</span>
                     </button>
                 </form>
 

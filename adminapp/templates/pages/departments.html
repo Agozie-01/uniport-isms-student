@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Students{% endblock %}
+{% block title %}Departments{% endblock %}
 
 {% block page_title %}
 <!-- Page Title with Animation -->
-<h1 class="h3 mb-4 animate__animated animate__fadeIn">Students</h1>
+<h1 class="h3 mb-4 animate__animated animate__fadeIn">Departments</h1>
 {% endblock %}
 
 {% block content %}
-<div x-data="studentList()">
+<div x-data="departmentList()">
     <!-- Search Bar -->
     <div class="row mb-3">
         <div class="col-md-6 animate__animated animate__fadeIn mb-2">
             <div class="input-group">
                 <div class="form-outline" data-mdb-input-init>
-                    <input type="search" x-model="searchTerm" @input.debounce.500ms="fetchRecords" class="form-control" placeholder="Search students..." />
+                    <input type="search" x-model="searchTerm" @input.debounce.500ms="fetchRecords" class="form-control" placeholder="Search departments..." />
                     <label class="form-label">Search</label>
                 </div>
                 <button type="button" class="btn btn-light" @click="fetchRecords" :disabled="loading">
@@ -34,51 +34,49 @@
         </div>
     </div>
 
-    <!-- Search and Bulk Upload or New Student -->
+    <!-- Search and Bulk Upload or New Department -->
     <div class="row mb-4">
-        <!-- Bulk Upload and Add Student Button with Animation -->
+        <!-- Bulk Upload and Add Department Button with Animation -->
         <div class="text-end animate__animated animate__fadeIn">
             <div class="btn-group" role="group">
                 <!-- Bulk Upload Button -->
                 <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#bulkUploadModal">
                     <i class="fas fa-file-upload"></i> Bulk Upload
                 </button>
-                <!-- Add Student Button -->
-                <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addStudentModal">
-                    <i class="fas fa-user-plus"></i> Add Student
+                <!-- Add Department Button -->
+                <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addDepartmentModal">
+                    <i class="fas fa-building"></i> Add Department
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Table, pagination, etc. (unchanged) -->
+    <!-- Table, pagination, etc. -->
     <div x-init="fetchRecords()">
-        <!-- Students Table with Animation -->
+        <!-- Departments Table with Animation -->
         <div class="row">
             <div class="col-12 animate__animated animate__fadeIn">
                 <div class="card">
                     <table class="table table-hover my-0">
                         <thead>
                             <tr>
-                                <th>Matric Number</th>
-                                <th>Full Name</th>
-                                <th class="d-none d-md-table-cell">Department</th>
-                                <th class="d-none d-md-table-cell">Level</th>
-                                <th class="d-none d-md-table-cell">Email</th>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Code</th>
+                                <th>Created At</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <!-- Render rows dynamically -->
-                            <template x-for="student in students" :key="student.id">
+                            <template x-for="department in departments" :key="department.id">
                                 <tr>
-                                    <td x-text="student.matric_number"></td>
-                                    <td x-text="student.first_name + ' ' + student.last_name"></td>
-                                    <td class="d-none d-md-table-cell" x-text="student.department"></td>
-                                    <td class="d-none d-md-table-cell" x-text="student.level"></td>
-                                    <td class="d-none d-md-table-cell" x-text="student.email"></td>
-                                    <td x-text="student.status"></td>
+                                    <td x-text="department.id"></td>
+                                    <td x-text="department.name"></td>
+                                    <td x-text="department.code"></td>
+                                    <td x-text="new Date(department.created_at).toLocaleDateString()"></td>
+                                    <td x-text="department.is_active ? 'Active' : 'Inactive'"></td>
                                     <td>
                                         <div class="dropdown">
                                             <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -88,7 +86,6 @@
                                                 <li><a class="dropdown-item" href="#"><i class="fas fa-pencil-alt"></i> Update Details</a></li>
                                                 <li><a class="dropdown-item" href="#"><i class="fas fa-trash-alt"></i> Delete</a></li>
                                                 <li><a class="dropdown-item" href="#"><i class="fas fa-ban"></i> Block</a></li>
-                                                <li><a class="dropdown-item" href="#"><i class="fas fa-file-export"></i> Generate Spreadsheet</a></li>
                                             </ul>
                                         </div>
                                     </td>
@@ -96,8 +93,8 @@
                             </template>
 
                             <!-- Empty State -->
-                            <tr x-show="students.length === 0">
-                                <td colspan="7" class="text-center p-5">
+                            <tr x-show="departments.length === 0">
+                                <td colspan="6" class="text-center p-5">
                                     <i class="fas fa-folder-open fa-3x text-muted"></i>
                                     <p class="mt-3 text-muted">No records found.</p>
                                 </td>
@@ -114,11 +111,10 @@
             <span>Page <span x-text="page"></span> of <span x-text="totalPages"></span></span>
             <button class="btn btn-light" :disabled="page === totalPages" @click="nextPage()">Next</button>
         </div>
-    </div>
+  
 </div>
 
-
-{% include "components/upload_student_modal.html" %}
-{% include "components/add_student_modal.html" %}
+{% include "components/upload_department_modal.html" %}
+{% include "components/add_department_modal.html" %}
 
 {% endblock %}

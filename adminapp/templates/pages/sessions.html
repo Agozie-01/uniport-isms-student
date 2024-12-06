@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Students{% endblock %}
+{% block title %}Sessions{% endblock %}
 
 {% block page_title %}
 <!-- Page Title with Animation -->
-<h1 class="h3 mb-4 animate__animated animate__fadeIn">Students</h1>
+<h1 class="h3 mb-4 animate__animated animate__fadeIn">Sessions</h1>
 {% endblock %}
 
 {% block content %}
-<div x-data="studentList()">
+<div x-data="sessionList()">
     <!-- Search Bar -->
     <div class="row mb-3">
         <div class="col-md-6 animate__animated animate__fadeIn mb-2">
             <div class="input-group">
                 <div class="form-outline" data-mdb-input-init>
-                    <input type="search" x-model="searchTerm" @input.debounce.500ms="fetchRecords" class="form-control" placeholder="Search students..." />
+                    <input type="search" x-model="searchTerm" @input.debounce.500ms="fetchRecords" class="form-control" placeholder="Search sessions..." />
                     <label class="form-label">Search</label>
                 </div>
                 <button type="button" class="btn btn-light" @click="fetchRecords" :disabled="loading">
@@ -34,18 +34,18 @@
         </div>
     </div>
 
-    <!-- Search and Bulk Upload or New Student -->
+    <!-- Search and Bulk Upload or New Session -->
     <div class="row mb-4">
-        <!-- Bulk Upload and Add Student Button with Animation -->
+        <!-- Bulk Upload and Add Session Button with Animation -->
         <div class="text-end animate__animated animate__fadeIn">
             <div class="btn-group" role="group">
                 <!-- Bulk Upload Button -->
                 <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#bulkUploadModal">
                     <i class="fas fa-file-upload"></i> Bulk Upload
                 </button>
-                <!-- Add Student Button -->
-                <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addStudentModal">
-                    <i class="fas fa-user-plus"></i> Add Student
+                <!-- Add Session Button -->
+                <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addSessionModal">
+                    <i class="fas fa-calendar-plus"></i> Add Session
                 </button>
             </div>
         </div>
@@ -53,39 +53,39 @@
 
     <!-- Table, pagination, etc. (unchanged) -->
     <div x-init="fetchRecords()">
-        <!-- Students Table with Animation -->
+        <!-- Sessions Table with Animation -->
         <div class="row">
             <div class="col-12 animate__animated animate__fadeIn">
                 <div class="card">
                     <table class="table table-hover my-0">
                         <thead>
                             <tr>
-                                <th>Matric Number</th>
-                                <th>Full Name</th>
-                                <th class="d-none d-md-table-cell">Department</th>
-                                <th class="d-none d-md-table-cell">Level</th>
-                                <th class="d-none d-md-table-cell">Email</th>
+                                <th>Session Name</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                               <!--  <th>Semester</th> -->
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <!-- Render rows dynamically -->
-                            <template x-for="student in students" :key="student.id">
+                            <template x-for="session in sessions" :key="session.id">
                                 <tr>
-                                    <td x-text="student.matric_number"></td>
-                                    <td x-text="student.first_name + ' ' + student.last_name"></td>
-                                    <td class="d-none d-md-table-cell" x-text="student.department"></td>
-                                    <td class="d-none d-md-table-cell" x-text="student.level"></td>
-                                    <td class="d-none d-md-table-cell" x-text="student.email"></td>
-                                    <td x-text="student.status"></td>
+                                    <td x-text="session.name"></td>
+                                    <td x-text="session.start_date"></td>
+                                    <td x-text="session.end_date"></td>
+                                    <!-- <td x-text="session.semester"></td> -->
+                                    <td x-text="session.is_active ? 'Active' : 'Inactive'"></td>
+
+
                                     <td>
                                         <div class="dropdown">
                                             <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                 Actions
                                             </button>
                                             <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="#"><i class="fas fa-pencil-alt"></i> Update Details</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-pencil-alt"></i> Update Session</a></li>
                                                 <li><a class="dropdown-item" href="#"><i class="fas fa-trash-alt"></i> Delete</a></li>
                                                 <li><a class="dropdown-item" href="#"><i class="fas fa-ban"></i> Block</a></li>
                                                 <li><a class="dropdown-item" href="#"><i class="fas fa-file-export"></i> Generate Spreadsheet</a></li>
@@ -96,8 +96,8 @@
                             </template>
 
                             <!-- Empty State -->
-                            <tr x-show="students.length === 0">
-                                <td colspan="7" class="text-center p-5">
+                            <tr x-show="sessions.length === 0">
+                                <td colspan="5" class="text-center p-5">
                                     <i class="fas fa-folder-open fa-3x text-muted"></i>
                                     <p class="mt-3 text-muted">No records found.</p>
                                 </td>
@@ -117,8 +117,7 @@
     </div>
 </div>
 
-
-{% include "components/upload_student_modal.html" %}
-{% include "components/add_student_modal.html" %}
+{% include "components/upload_session_modal.html" %}
+{% include "components/add_session_modal.html" %}
 
 {% endblock %}
