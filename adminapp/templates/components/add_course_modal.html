@@ -1,0 +1,88 @@
+<!-- Modal for Add Course -->
+<div x-data="addCourse()" class="modal fade" id="addCourseModal" tabindex="-1" aria-labelledby="addCourseModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCourseModalLabel">Add New Course</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form @submit.prevent="addCourse">
+                    <!-- Display general error if any -->
+                    <div x-show="errors?.general" class="alert alert-danger">
+                        <span x-text="errors?.general"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="courseName" class="form-label">Course Name</label>
+                            <input type="text" class="form-control" id="courseName" x-model="courseData.name" :class="{'is-invalid': errors?.name}" required />
+                            <div x-show="errors?.name" class="invalid-feedback" x-text="errors?.name"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="courseCode" class="form-label">Course Code</label>
+                            <input type="text" class="form-control" id="courseCode" x-model="courseData.code" :class="{'is-invalid': errors?.code}" required />
+                            <div x-show="errors?.code" class="invalid-feedback" x-text="errors?.code"></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="department" class="form-label">Department</label>
+                            <select id="department" class="form-select" x-model="courseData.department" :class="{'is-invalid': errors?.department}" required>
+                                <option value="">Select Department</option>
+                                <!-- Assume departments are passed to the modal as an array -->
+                                <template x-for="department in departments" :key="department.id">
+                                    <option :value="department.id" x-text="department.name"></option>
+                                </template>
+                            </select>
+                            <div x-show="errors?.department" class="invalid-feedback" x-text="errors?.department"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="session" class="form-label">Session</label>
+                            <select id="session" class="form-select" x-model="courseData.session" :class="{'is-invalid': errors?.session}" required>
+                                <option value="">Select Session</option>
+                                <!-- Assume sessions are passed to the modal as an array -->
+                                <template x-for="session in sessions" :key="session.id">
+                                    <option :value="session.id" x-text="session.name"></option>
+                                </template>
+                            </select>
+                            <div x-show="errors?.session" class="invalid-feedback" x-text="errors?.session"></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="creditUnits" class="form-label">Credit Units</label>
+                            <input type="number" class="form-control" id="creditUnits" x-model="courseData.creditUnits" :class="{'is-invalid': errors?.credit_units}" required />
+                            <div x-show="errors?.credit_units" class="invalid-feedback" x-text="errors?.credit_units"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="courseDescription" class="form-label">Course Description</label>
+                        <textarea id="courseDescription" class="form-control" rows="3" x-model="courseData.description" :class="{'is-invalid': errors?.description}"></textarea>
+                        <div x-show="errors?.description" class="invalid-feedback" x-text="errors?.description"></div>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="isActive" x-model="courseData.isActive" :class="{'is-invalid': errors?.is_active}" />
+                        <label class="form-check-label" for="isActive">Is Active</label>
+                        <div x-show="errors?.is_active" class="invalid-feedback" x-text="errors?.is_active"></div>
+                    </div>
+
+                    <br />
+                    <button type="submit" class="btn btn-secondary" :disabled="loading">
+                        <span x-show="loading">Adding...</span>
+                        <span x-show="!loading">Add Course</span>
+                    </button>
+                </form>
+
+                <!-- Success Message -->
+                <div x-show="successMessage" class="alert alert-success mt-3">
+                    <span x-text="successMessage"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

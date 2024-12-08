@@ -1,94 +1,79 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-from django.http import HttpResponse
-from io import BytesIO
-import pandas as pd
-
-from ..models import Result, Student, Course
+from rest_framework.pagination import PageNumberPagination
+from django.db.models import Q  # For filtering/searching
+from ..models import Result
 from ..serializers import ResultSerializer
 
 
-class FetchResultsView(APIView):
-    """
-    Endpoint to fetch all results.
-    """
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        results = Result.objects.all()
-        serializer = ResultSerializer(results, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+class ResultPagination(PageNumberPagination):
+    page_size = 10  # Customize the number of results per page
+    page_size_query_param = 'page_size'
+    max_page_size = 100  # Optional
 
 
-class GenerateSpreadsheetView(APIView):
-    permission_classes = [IsAuthenticated]
+class ResultView(APIView):
+    def get(self, request, result_id=None):
+        """
+        Retrieve a single result by ID or list all results with pagination and search.
+        """
+        search_term = request.GET.get('search_term', '')  # For searching results
 
-    def get(self, request, student_id):
-        try:
-            # Fetch all results for the given student
-            student = Student.objects.get(id=student_id)
-            results = Result.objects.filter(student=student)
-            
-            # Validate that results exist
-            if not results.exists():
-                return Response({"message": "No results found for this student"}, status=status.HTTP_404_NOT_FOUND)
-            
-            # Generate spreadsheet logic here
-            response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-            response["Content-Disposition"] = f"attachment; filename={student_id}_results.xlsx"
-            
-            # Example: Generate a basic spreadsheet using openpyxl or similar library
-            from openpyxl import Workbook
-            wb = Workbook()
-            ws = wb.active
-            ws.title = f"{student.name}'s Results"
+        if result_id:
+            try:
+                result = Result.objects.get(pk=result_id)
+                serializer = ResultSerializer(result)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except Result.DoesNotExist:
+                return Response({"error": "Result not found"}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            # List all results with optional filtering
+            results = Result.objects.all()
 
-            # Add headers
-            ws.append(["Course", "Score", "Grade", "Uploaded At"])
-            
-            # Add data rows
-            for result in results:
-                ws.append([result.course.name, result.score, result.grade, result.uploaded_at])
-            
-            # Save the spreadsheet to the response
-            wb.save(response)
-            return response
-        except Student.DoesNotExist:
-            return Response({"message": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
+            if search_term:
+                results = results.filter(
+                    Q(student__name__icontains=search_term) |  # Search by student name
+                    Q(course__name__icontains=search_term)  # Search by course name
+                )
 
-
-class UploadResultsView(APIView):
-    """
-    Endpoint to upload results from a spreadsheet.
-    """
-    permission_classes = [IsAuthenticated]
+            paginator = ResultPagination()
+            paginated_results = paginator.paginate_queryset(results, request)
+            serializer = ResultSerializer(paginated_results, many=True)
+            return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
-        file = request.FILES.get("file")
-        if not file:
-            return Response({"error": "No file provided"}, status=status.HTTP_400_BAD_REQUEST)
+        """
+        Create a new result.
+        """
+        serializer = ResultSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def put(self, request, result_id=None):
+        """
+        Update an existing result by ID.
+        """
         try:
-            # Read the spreadsheet using pandas
-            df = pd.read_excel(file)
+            result = Result.objects.get(pk=result_id)
+        except Result.DoesNotExist:
+            return Response({"error": "Result not found"}, status=status.HTTP_404_NOT_FOUND)
 
-            # Process each row in the DataFrame
-            for _, row in df.iterrows():
-                student = Student.objects.get(id=row["student_id"])  # Assuming the column is 'student_id'
-                course = Course.objects.get(id=row["course_id"])  # Assuming the column is 'course_id'
+        serializer = ResultSerializer(result, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-                result_data = {
-                    "student": student,
-                    "course": course,
-                    "score": row["score"],
-                    "grade": row["grade"],
-                }
-
-                # Save the result to the database
-                Result.objects.create(**result_data)
-
-            return Response({"message": "Results uploaded successfully"}, status=status.HTTP_201_CREATED)
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    def delete(self, request, result_id=None):
+        """
+        Delete a result by ID.
+        """
+        try:
+            result = Result.objects.get(pk=result_id)
+            result.delete()
+            return Response({"message": "Result deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+        except Result.DoesNotExist:
+            return Response({"error": "Result not found"}, status=status.HTTP_404_NOT_FOUND)

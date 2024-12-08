@@ -13,6 +13,7 @@ def sidebar_menu(request):
             "items": [
                 {"name": "Results", "link": reverse('results_view'), "icon": "file-text"},  # Results icon
                 {"name": "Students", "link": reverse('students_page'), "icon": "users"},  # students_page icon
+                {"name": "Courses", "link": reverse('courses_page'), "icon": "book"},  # Sessions icon
                 {"name": "Departments", "link": reverse('departments_page'), "icon": "layers"},  # Departments icon
                 {"name": "Semesters", "link": reverse('semesters_page'), "icon": "calendar"},  # Semesters icon
                 {"name": "Sessions", "link": reverse('sessions_page'), "icon": "clock"},  # Sessions icon

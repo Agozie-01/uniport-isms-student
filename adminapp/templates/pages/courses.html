@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Results{% endblock %}
+{% block title %}Courses{% endblock %}
 
 {% block page_title %}
 <!-- Page Title with Animation -->
-<h1 class="h3 mb-4 animate__animated animate__fadeIn">Results</h1>
+<h1 class="h3 mb-4 animate__animated animate__fadeIn">Courses</h1>
 {% endblock %}
 
 {% block content %}
-<div x-data="resultList()">
-    <!-- Search Bar (Top-Left) -->
+<div x-data="courseList()">
+    <!-- Search Bar -->
     <div class="row mb-3">
         <div class="col-md-6 animate__animated animate__fadeIn mb-2">
             <div class="input-group">
                 <div class="form-outline" data-mdb-input-init>
-                    <input type="search" x-model="searchTerm" @input.debounce.500ms="fetchRecords" class="form-control" placeholder="Search results..." />
+                    <input type="search" x-model="searchTerm" @input.debounce.500ms="fetchRecords" class="form-control" placeholder="Search courses..." />
                     <label class="form-label">Search</label>
                 </div>
                 <button type="button" class="btn btn-light" @click="fetchRecords" :disabled="loading">
@@ -29,68 +29,66 @@
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                     </template>
                 </button>
+                
             </div>
         </div>
     </div>
 
-    <!-- Search and Add Result Button -->
+    <!-- Search and Bulk Upload or New Course -->
     <div class="row mb-4">
+        <!-- Bulk Upload and Add Course Button with Animation -->
         <div class="text-end animate__animated animate__fadeIn">
             <div class="btn-group" role="group">
                 <!-- Bulk Upload Button -->
-                 
                 <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#bulkUploadModal">
                     <i class="fas fa-file-upload"></i> Bulk Upload
                 </button>
-                <!-- Add Result Button -->
-                <!-- <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addResultModal">
-                    <i class="fas fa-plus"></i> Add Result
+                <!-- Add Course Button -->
+                <!-- <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addCourseModal">
+                    <i class="fas fa-plus-circle"></i> Add Course
                 </button> -->
             </div>
         </div>
     </div>
 
-    <!-- Table and Pagination -->
+    <!-- Table, pagination, etc. -->
     <div x-init="fetchRecords()">
-        <!-- Results Table with Animation -->
+        <!-- courses Table with Animation -->
         <div class="row">
             <div class="col-12 animate__animated animate__fadeIn">
                 <div class="card">
                     <table class="table table-hover my-0">
                         <thead>
                             <tr>
+                                <th>Course Name</th>
                                 <th>Course Code</th>
-                                <th>Course Title</th>
-                                <th>Unit</th>
-                                <th>Score</th>
-                                <th>Grade</th>
-                                <th>GP</th>
-                                <th>QP</th>
+                                <th>Department</th>
+                                <th>Session</th>
+                                <th>Credit Units</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <!-- Render rows dynamically -->
-                            <template x-for="result in results" :key="result.id">
+                            <template x-for="course in courses" :key="course.id">
                                 <tr>
-                                    <td x-text="result.course.code"></td>
-                                    <td x-text="result.course.name"></td>
-                                    <td x-text="result.course.credit_units"></td>
-                                    <td x-text="result.score"></td>
-                                    <td x-text="result.grade"></td>
-                                    <td x-text="result.gp"></td>
-                                    <td x-text="result.qp"></td>
-                                    <td x-text="result.status"></td>
+                                    <td x-text="course.name"></td>
+                                    <td x-text="course.code"></td>
+                                    <td x-text="course.department"></td>
+                                    <td x-text="course.session"></td>
+                                    <td x-text="course.credit_units"></td>
+                                    <td x-text="course.is_active ? 'Active' : 'Inactive'"></td>
                                     <td>
                                         <div class="dropdown">
                                             <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                 Actions
                                             </button>
                                             <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="#"><i class="fas fa-pencil-alt"></i> Update Result</a></li>
-                                                <li><a class="dropdown-item" href="#"><i class="fas fa-trash-alt"></i> Delete</a></li>
-                                                <li><a class="dropdown-item" href="#"><i class="fas fa-ban"></i> Block</a></li>
+                                                <!-- <li><a class="dropdown-item" href="#" @click="editCourse(course)"><i class="fas fa-pencil-alt"></i> Update Course</a></li>
+                                                <li><a class="dropdown-item" href="#" @click="deleteCourse(course.id)"><i class="fas fa-trash-alt"></i> Delete</a></li>
+                                                <li><a class="dropdown-item" href="#" @click="blockCourse(course.id)"><i class="fas fa-ban"></i> Block</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-file-export"></i> Generate Spreadsheet</a></li> -->
                                             </ul>
                                         </div>
                                     </td>
@@ -98,8 +96,8 @@
                             </template>
 
                             <!-- Empty State -->
-                            <tr x-show="results.length === 0">
-                                <td colspan="8" class="text-center p-5">
+                            <tr x-show="courses.length === 0">
+                                <td colspan="7" class="text-center p-5">
                                     <i class="fas fa-folder-open fa-3x text-muted"></i>
                                     <p class="mt-3 text-muted">No records found.</p>
                                 </td>
@@ -119,6 +117,7 @@
     </div>
 </div>
 
-{% include "components/upload_results_modal.html" %}
+{% include "components/upload_course_modal.html" %}
+
 
 {% endblock %}

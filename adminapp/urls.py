@@ -15,6 +15,7 @@ urlpatterns = [
     re_path(r'^departments/?$', views.departments, name='departments_page'),
     re_path(r'^semesters/?$', views.semesters, name='semesters_page'),
     re_path(r'^sessions/?$', views.sessions, name='sessions_page'),
+    re_path(r'^courses/?$', views.courses, name='courses_page'),
 
     # Settings Routes
     re_path(r'^settings/system/?$', views.home, name='settings_system'),

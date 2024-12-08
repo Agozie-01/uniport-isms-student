@@ -8,9 +8,11 @@ from .recent_activity import RecentActivitiesView
 from .current_user import CurrentUserView
 from .course_performance_trend import CoursePerformanceTrendView
 from .course import CourseView
+from .upload_course import UploadCoursesView
 from .semester import SemesterView
 from .upload_semester import UploadSemestersView
 from .session import SessionView
 from .upload_session import UploadSessionsView
-from .result import *
-
+from .result import ResultView
+from .upload_result import UploadResultsView
+from .generate_spreadsheet import GenerateSpreadsheetView

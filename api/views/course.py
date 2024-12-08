@@ -2,8 +2,15 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser
+from rest_framework.pagination import PageNumberPagination
+from django.db.models import Q  # For filtering with OR conditions
 from ..models import Course
 from ..serializers import CourseSerializer
+
+class CoursePagination(PageNumberPagination):
+    page_size = 10  # Customize the page size (number of courses per page)
+    page_size_query_param = 'page_size'
+    max_page_size = 100  # Optional: maximum number of courses per page
 
 class CourseView(APIView):
     permission_classes = [IsAdminUser]
@@ -20,8 +27,10 @@ class CourseView(APIView):
 
     def get(self, request, course_id=None):
         """
-        Retrieve a single course by ID or list all courses.
+        Retrieve a single course by ID or list all courses with pagination and search.
         """
+        search_term = request.GET.get('search_term', '')  # Get the search query parameter
+        
         if course_id:
             try:
                 course = Course.objects.get(pk=course_id)
@@ -30,10 +39,19 @@ class CourseView(APIView):
             except Course.DoesNotExist:
                 return Response({"error": "Course not found"}, status=status.HTTP_404_NOT_FOUND)
         else:
-            # List all courses
+            # List all courses with pagination and search
             courses = Course.objects.all()
-            serializer = CourseSerializer(courses, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+
+            if search_term:
+                courses = courses.filter(
+                    Q(course_code__icontains=search_term) |  # Search by course code
+                    Q(course_title__icontains=search_term)  # Search by course title
+                )
+
+            paginator = CoursePagination()
+            paginated_courses = paginator.paginate_queryset(courses, request)
+            serializer = CourseSerializer(paginated_courses, many=True)
+            return paginator.get_paginated_response(serializer.data)
 
     def put(self, request, course_id=None):
         """

@@ -9,10 +9,11 @@ from .views import (
     RecentActivitiesView,
     CoursePerformanceTrendView,
     CourseView,
+    UploadCoursesView,
     SemesterView,
     SessionView,
     UploadResultsView,
-    FetchResultsView,
+    ResultView,
     GenerateSpreadsheetView,
     UploadStudentsView,
     UploadSemestersView,
@@ -57,6 +58,7 @@ urlpatterns = [
     re_path(r'^courses/performance-trend/?$', CoursePerformanceTrendView.as_view(), name='course_performance_trend'),
     re_path(r'^courses/?$', CourseView.as_view(), name='course_list_create'),  # For listing and creating courses
     re_path(r'^courses/(?P<course_id>\d+)/?$', CourseView.as_view(), name='course_detail'),  # For getting, updating, and deleting specific courses
+    re_path(r"^courses/upload/?$", UploadCoursesView.as_view(), name="upload_courses"),
 
     # Semesters
     re_path(r'^semesters/?$', SemesterView.as_view(), name='semester_list_create'),  # List all semesters and create new one
@@ -69,7 +71,7 @@ urlpatterns = [
     re_path(r"^sessions/upload/?$", UploadSessionsView.as_view(), name="upload_sessions"),
 
     # Result Management
-    re_path(r"^results/?$", FetchResultsView.as_view(), name="fetch_results"),
+    re_path(r"^results/?$", ResultView.as_view(), name="fetch_results"),
     re_path(r"^^results/spreadsheet/(?P<student_id>\d+)/?$", GenerateSpreadsheetView.as_view(), name="generate_spreadsheet"),
     re_path(r"^results/upload/?$", UploadResultsView.as_view(), name="upload_results"),
 ]

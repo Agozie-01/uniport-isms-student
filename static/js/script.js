@@ -727,7 +727,7 @@ window.sessionList = function() {
       this.loading = true;
       try {
         const response = await dispatchRequest("sessionList", "GET", `/api/sessions?page=${this.page}&search_term=${this.searchTerm}`);
-        this.sessions = response.results; // Session list
+        this.sessions = response.results || []; // Session list
         this.totalPages = Math.ceil(response.count / 10); // Total pages based on count and page size (10 per page)
         
         setTimeout(() => {
@@ -807,6 +807,219 @@ window.addSession = function() {
   };
 }
 
+window.courseList = function() {
+  return {
+    courses: [], // Array to hold the course data
+    searchTerm: '', // Search term for filtering courses
+    page: 1, // Current page for pagination
+    totalPages: 1, // Total number of pages for pagination
+    loading: false, // Loading state
+
+    // Method to fetch course records
+    async fetchRecords() {
+      this.loading = true;
+      try {
+        const response = await dispatchRequest("courseList", "GET", `/api/courses?page=${this.page}&search_term=${this.searchTerm}`);
+        
+        this.courses = response.results || []; // Ensure courses is an array
+        const count = response.count ?? 1; // Use 0 as fallback for undefined/null count
+        this.totalPages = Math.ceil(count / 10); // Calculate total pages based on count
+        
+        setTimeout(() => {
+          this.loading = false;
+        }, 1000); // Delay loading state for better user experience
+
+      } catch (error) {
+        this.loading = false;
+        console.error("Error fetching course records:", error);
+      }
+    },
+
+    // Pagination methods
+    prevPage() {
+      if (this.page > 1) {
+        this.page--;
+        this.fetchRecords(); // Fetch new records for the previous page
+      }
+    },
+
+    nextPage() {
+      if (this.page < this.totalPages) {
+        this.page++;
+        this.fetchRecords(); // Fetch new records for the next page
+      }
+    }
+  };
+};
+
+window.addCourse = function () {
+  return {
+    loading: false,
+    errors: {}, // Store field-specific and general errors
+    successMessage: "", // Success message for successful submissions
+    courseData: {
+      name: "",
+      code: "",
+      department: null,  // Assuming department ID
+      session: null,     // Assuming session ID
+      creditUnits: 3,
+      description: "",
+      isActive: true,
+    },
+
+    // Method to add a new course
+    async addCourse() {
+      // Clear previous errors and messages
+      this.errors = {};
+      this.successMessage = "";
+
+      // Validate input fields
+      const requiredFields = [
+        "name",
+        "code",
+        "department",
+        "session",
+      ];
+
+      const missingFields = requiredFields.filter(
+        (field) => !this.courseData[field]
+      );
+
+      if (missingFields.length > 0) {
+        this.errors.general = "Please fill out all the required fields.";
+        missingFields.forEach((field) => {
+          this.errors[field] = `${field.replace(
+            /([A-Z])/g,
+            " $1"
+          )} is required.`; // Converts camelCase to readable text
+        });
+        return;
+      }
+
+      this.loading = true;
+
+      // Prepare the payload to match the Django Course model
+      const payload = {
+        name: this.courseData.name,
+        code: this.courseData.code,
+        department: this.courseData.department, // Assumed as the department ID
+        session: this.courseData.session,       // Assumed as the session ID
+        credit_units: this.courseData.creditUnits,
+        description: this.courseData.description,
+        is_active: this.courseData.isActive,
+      };
+
+      try {
+        // Send the API request
+        const response = await dispatchRequest(
+          "addCourse", // Unique key for request
+          "POST", // HTTP method
+          `/api/courses`, // Endpoint (make sure this matches your Django URL pattern)
+          payload // Payload data
+        );
+
+        // Handle success
+        this.successMessage = "Course added successfully!";
+        this.errors = {}; // Clear errors
+      } catch (error) {
+        // Handle API errors
+        if (error?.data) {
+          const apiErrors = error.data;
+
+          // Map errors to `errors` object
+          this.errors = {};
+          for (const [field, messages] of Object.entries(apiErrors)) {
+            this.errors[field] = messages[0]; // Use the first error message
+          }
+        } else {
+          this.errors.general =
+            error?.data?.error || "An unexpected error occurred.";
+        }
+
+        this.successMessage = ""; // Clear success message
+      } finally {
+        this.loading = false;
+      }
+    },
+  };
+};
+
+window.uploadCourse = function () {
+  return {
+    loading: false,
+    file: null,
+    errors: [], // To store error messages
+
+    // Handle file change (on file selection)
+    handleFileChange(event) {
+      this.file = event.target.files[0];
+    },
+
+    // Method to upload course records from the Excel file
+    async uploadFile() {
+      if (!this.file) {
+        alert("Please select a file first.");
+        return;
+      }
+
+      this.loading = true;
+      this.errors = []; // Clear previous errors
+
+      try {
+        // Prepare form data
+        const formData = new FormData();
+        formData.append("file", this.file);
+
+        // Send the request
+        const response = await dispatchRequest(
+          "uploadCoursesFromFile",
+          "POST",
+          `/api/courses/upload`,  // Adjusted endpoint for courses
+          formData
+        );
+
+        // Check if there are any errors in the response
+        if (response.errors && response.errors.length > 0) {
+          this.errors = response.errors; // Capture errors from the response
+          console.log("Upload errors:", this.errors);
+
+          // Combine all errors into a single message for display
+          let errorMessage = "Some records failed to upload. Errors:\n";
+          this.errors.forEach((error) => {
+            errorMessage += `${error.error} for course ${error.code || "unknown"}\n`;
+          });
+
+          // Show the error message
+          toastError(errorMessage, "right");
+        }
+
+        // If no errors, show success message
+        if (!this.errors.length) {
+          toastSuccess("Course records uploaded successfully!", "center", () => {
+            this.loading = false;
+          });
+        }
+
+      } catch (error) {
+        // Check if server sent specific error messages
+        if (error.response && error.response.data && error.response.data.errors) {
+          this.errors = error.response.data.errors; // Capture errors from server response
+          console.log("Upload errors:", this.errors);
+        } else {
+          toastError(
+            error?.response?.data?.error || "An unexpected error occurred.",
+            "center"
+          );
+          console.log("Error uploading course records:", error);
+        }
+      } finally {
+        this.loading = false;
+      }
+    },
+  };
+};
+
+
 
 window.resultList = function() {
   return {
@@ -821,8 +1034,10 @@ window.resultList = function() {
       this.loading = true;
       try {
         const response = await dispatchRequest("resultList", "GET", `/api/results?page=${this.page}&search_term=${this.searchTerm}`);
-        this.results = response.results; // Result list
-        this.totalPages = Math.ceil(response.count / 10); // Total pages based on count and page size (10 per page)
+        
+        this.results = response.results || []; // Ensure results is an array
+        const count = response.count ?? 1; // Use 0 as fallback for undefined/null count
+        this.totalPages = Math.ceil(count / 10); // Calculate total pages based on count
         
         setTimeout(() => {
           this.loading = false;
@@ -848,6 +1063,81 @@ window.resultList = function() {
         this.fetchRecords(); // Fetch new records for the next page
       }
     }
+  };
+};
+
+window.uploadResult = function () {
+  return {
+    loading: false,
+    file: null,
+    errors: [], // To store error messages
+
+    // Handle file change (on file selection)
+    handleFileChange(event) {
+      this.file = event.target.files[0];
+    },
+
+    // Method to upload course records from the Excel file
+    async uploadFile() {
+      if (!this.file) {
+        alert("Please select a file first.");
+        return;
+      }
+
+      this.loading = true;
+      this.errors = []; // Clear previous errors
+
+      try {
+        // Prepare form data
+        const formData = new FormData();
+        formData.append("file", this.file);
+
+        // Send the request
+        const response = await dispatchRequest(
+          "uploadCoursesFromFile",
+          "POST",
+          `/api/courses/upload`,  // Adjusted endpoint for courses
+          formData
+        );
+
+        // Check if there are any errors in the response
+        if (response.errors && response.errors.length > 0) {
+          this.errors = response.errors; // Capture errors from the response
+          console.log("Upload errors:", this.errors);
+
+          // Combine all errors into a single message for display
+          let errorMessage = "Some records failed to upload. Errors:\n";
+          this.errors.forEach((error) => {
+            errorMessage += `${error.error} for course ${error.code || "unknown"}\n`;
+          });
+
+          // Show the error message
+          toastError(errorMessage, "right");
+        }
+
+        // If no errors, show success message
+        if (!this.errors.length) {
+          toastSuccess("Course records uploaded successfully!", "center", () => {
+            this.loading = false;
+          });
+        }
+
+      } catch (error) {
+        // Check if server sent specific error messages
+        if (error.response && error.response.data && error.response.data.errors) {
+          this.errors = error.response.data.errors; // Capture errors from server response
+          console.log("Upload errors:", this.errors);
+        } else {
+          toastError(
+            error?.response?.data?.error || "An unexpected error occurred.",
+            "center"
+          );
+          console.log("Error uploading course records:", error);
+        }
+      } finally {
+        this.loading = false;
+      }
+    },
   };
 };
 

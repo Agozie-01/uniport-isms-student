@@ -26,3 +26,7 @@ def semesters(request):
 def departments(request):
     # Define the sidebar menu with groups and items
     return render(request, 'pages/departments.html', {'active_link': request.path})
+
+def courses(request):
+    # Define the sidebar menu with groups and items
+    return render(request, 'pages/courses.html', {'active_link': request.path})
