@@ -1035,8 +1035,13 @@ window.resultList = function() {
       try {
         const response = await dispatchRequest("resultList", "GET", `/api/results?page=${this.page}&search_term=${this.searchTerm}`);
         
-        this.results = response.results || []; // Ensure results is an array
-        const count = response.count ?? 1; // Use 0 as fallback for undefined/null count
+        // Log the response for debugging purposes
+        console.log('API Response:', response);
+
+        // Ensure `results` is an array and `count` is valid
+        this.results = Array.isArray(response?.results) ? response.results : [];
+        
+        const count = response?.count ?? 0; // Default to 0 if count is missing
         this.totalPages = Math.ceil(count / 10); // Calculate total pages based on count
         
         setTimeout(() => {
@@ -1044,6 +1049,7 @@ window.resultList = function() {
         }, 1000); // Delay loading state for better user experience
 
       } catch (error) {
+        alert("Error loading results");
         this.loading = false;
         console.error("Error fetching result records:", error);
       }
@@ -1065,6 +1071,7 @@ window.resultList = function() {
     }
   };
 };
+
 
 window.uploadResult = function () {
   return {
@@ -1094,9 +1101,9 @@ window.uploadResult = function () {
 
         // Send the request
         const response = await dispatchRequest(
-          "uploadCoursesFromFile",
+          "uploadResultsFromFile",
           "POST",
-          `/api/courses/upload`,  // Adjusted endpoint for courses
+          `/api/results/upload`,  // Adjusted endpoint for courses
           formData
         );
 

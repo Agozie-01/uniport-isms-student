@@ -44,8 +44,9 @@ class CourseView(APIView):
 
             if search_term:
                 courses = courses.filter(
-                    Q(course_code__icontains=search_term) |  # Search by course code
-                    Q(course_title__icontains=search_term)  # Search by course title
+                    Q(code__icontains=search_term) |  # Search by course code
+                    Q(name__icontains=search_term) | # Search by course title
+                    Q(description__icontains=search_term) # Search by description
                 )
 
             paginator = CoursePagination()

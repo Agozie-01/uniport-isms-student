@@ -2,8 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-import pandas as pd
 from rest_framework.parsers import MultiPartParser
+import pandas as pd
 from ..models import Result, Student, Course
 
 
@@ -34,9 +34,7 @@ class UploadResultsView(APIView):
         """Reads the uploaded file and returns a DataFrame or an error response."""
         try:
             df = pd.read_excel(file)
-            required_columns = {
-                "student_id", "course_id", "score", "grade"
-            }
+            required_columns = {"student_id", "course_id", "score"}
             if not required_columns.issubset(df.columns):
                 missing_columns = required_columns - set(df.columns)
                 return Response(
@@ -49,6 +47,7 @@ class UploadResultsView(APIView):
 
     def process_results(self, df):
         """Processes the result records from the DataFrame."""
+        print("Processing results")
         created_results = []
         updated_results = []
         errors = []
@@ -108,7 +107,6 @@ class UploadResultsView(APIView):
     def update_result(self, result, row, updated_results):
         """Updates an existing result record."""
         result.score = row["score"]
-        result.grade = row["grade"]
         result.save()
         updated_results.append({"student": result.student.id, "course": result.course.id})
 
@@ -118,6 +116,5 @@ class UploadResultsView(APIView):
             student=student,
             course=course,
             score=row["score"],
-            grade=row["grade"],
         )
         created_results.append({"student": student.id, "course": course.id})

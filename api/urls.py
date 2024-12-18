@@ -71,7 +71,7 @@ urlpatterns = [
     re_path(r"^sessions/upload/?$", UploadSessionsView.as_view(), name="upload_sessions"),
 
     # Result Management
-    re_path(r"^results/?$", ResultView.as_view(), name="fetch_results"),
+    re_path(r"^results/?$", ResultView.as_view(), name="results"),
     re_path(r"^^results/spreadsheet/(?P<student_id>\d+)/?$", GenerateSpreadsheetView.as_view(), name="generate_spreadsheet"),
     re_path(r"^results/upload/?$", UploadResultsView.as_view(), name="upload_results"),
 ]
