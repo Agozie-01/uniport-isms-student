@@ -46,6 +46,7 @@ class CourseView(APIView):
                 courses = courses.filter(
                     Q(code__icontains=search_term) |  # Search by course code
                     Q(name__icontains=search_term) | # Search by course title
+                    Q(semester__name__icontains=search_term) | # Search by semester
                     Q(description__icontains=search_term) # Search by description
                 )
 

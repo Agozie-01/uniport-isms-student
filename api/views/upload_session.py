@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 import pandas as pd
 from rest_framework.parsers import MultiPartParser
-from ..models import Session, Semester  # Import Session and Semester models
+from ..models import Session  # Import only the Session model
 
 
 class UploadSessionsView(APIView):
@@ -34,14 +34,12 @@ class UploadSessionsView(APIView):
         """Reads the uploaded file and returns a DataFrame or an error response."""
         try:
             df = pd.read_excel(file)
-            required_columns = {
-                "name", "semester", "start_date", "end_date", "is_active"
-            }
+            required_columns = {"name", "start_date", "end_date", "is_active"}
             if not required_columns.issubset(df.columns):
                 missing_columns = required_columns - set(df.columns)
                 return Response(
                     {"error": f"Missing required columns: {missing_columns}"},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             return df
         except Exception as e:
@@ -69,22 +67,11 @@ class UploadSessionsView(APIView):
     def process_session_row(self, row, created_sessions, updated_sessions, errors):
         """Processes a single row of the DataFrame."""
         try:
-            # Find the semester related to this session by its name
-            semester = Semester.objects.filter(name=row["semester"]).first()
-            if not semester:
-                errors.append(
-                    {
-                        "name": row.get("name"),
-                        "error": f"Semester {row['semester']} does not exist.",
-                    }
-                )
-                return
-
-            existing_session = Session.objects.filter(name=row["name"], semester=semester).first()
+            existing_session = Session.objects.filter(name=row["name"]).first()
             if existing_session:
                 self.update_session(existing_session, row, updated_sessions, errors)
             else:
-                self.create_session(row, semester, created_sessions, errors)
+                self.create_session(row, created_sessions, errors)
 
         except Exception as e:
             errors.append(
@@ -102,20 +89,19 @@ class UploadSessionsView(APIView):
         session.save()
         updated_sessions.append(session.name)
 
-    def create_session(self, row, semester, created_sessions, errors):
+    def create_session(self, row, created_sessions, errors):
         """Creates a new session record."""
-        if Session.objects.filter(name=row["name"], semester=semester).exists():
+        if Session.objects.filter(name=row["name"]).exists():
             errors.append(
                 {
                     "name": row["name"],
-                    "error": f"Session {row['name']} for semester {semester.name} already exists.",
+                    "error": f"Session {row['name']} already exists.",
                 }
             )
             return
 
         Session.objects.create(
             name=row["name"],
-            semester=semester,
             start_date=row["start_date"],
             end_date=row["end_date"],
             is_active=row["is_active"],

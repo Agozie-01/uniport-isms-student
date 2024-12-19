@@ -1,6 +1,7 @@
 from django.db import models
 from .course import Course
 from .student import Student
+from .session import Session
 from decimal import Decimal, InvalidOperation
 
 class Result(models.Model):
@@ -13,6 +14,7 @@ class Result(models.Model):
     
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="results")
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="results")
+    session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name="results")
     score = models.DecimalField(max_digits=5, decimal_places=2)  # Supports scores like 89.5
     grade = models.CharField(max_length=2)  # e.g., "A", "B", etc.
     gp = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, default=0)  # Grade point (e.g., 4.00)

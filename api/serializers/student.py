@@ -1,7 +1,11 @@
 from rest_framework import serializers
 from ..models import Student
+from .department import DepartmentSerializer
 
 class StudentSerializer(serializers.ModelSerializer):
+       # Nested serializers for read operations
+    department = DepartmentSerializer(read_only=True)
+
     class Meta:
         model = Student
         fields = ['id', 'first_name', 'last_name', 'level', 'matric_number', 'department', 'email', 'status', 'date_of_birth', 'created_at']

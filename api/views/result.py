@@ -46,6 +46,10 @@ class ResultView(APIView):
             if search_term:
                 results = results.filter(
                     Q(student__first_name__icontains=search_term) |
+                    Q(student__last_name__icontains=search_term) |
+                    Q(student__matric_number__icontains=search_term) |
+                    Q(status__icontains=search_term) |
+                    Q(course__code__icontains=search_term) |
                     Q(course__name__icontains=search_term)
                 )
 

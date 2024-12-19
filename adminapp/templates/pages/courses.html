@@ -62,8 +62,8 @@
                             <tr>
                                 <th>Course Name</th>
                                 <th>Course Code</th>
-                                <th>Department</th>
-                                <th>Session</th>
+                                <th>Description</th>
+                                <th>Semester</th>
                                 <th>Credit Units</th>
                                 <th>Status</th>
                                 <th>Action</th>
@@ -75,10 +75,13 @@
                                 <tr>
                                     <td x-text="course.name"></td>
                                     <td x-text="course.code"></td>
-                                    <td x-text="course.department"></td>
-                                    <td x-text="course.session"></td>
+                                    <td x-text="course.description"></td>
+                                    <td x-text="course.semester.name"></td>
                                     <td x-text="course.credit_units"></td>
-                                    <td x-text="course.is_active ? 'Active' : 'Inactive'"></td>
+                                    <td>
+                                        <span x-text="course.is_active ? 'Active' : 'Inactive'" class="badge" :class="course.is_active ? 'bg-success' : 'bg-danger'"></span>
+                                    </td>
+                                
                                     <td>
                                         <div class="dropdown">
                                             <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">

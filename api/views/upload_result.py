@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser
 import pandas as pd
-from ..models import Result, Student, Course
+from ..models import Result, Student, Course, Session
 
 
 class UploadResultsView(APIView):
@@ -34,7 +34,7 @@ class UploadResultsView(APIView):
         """Reads the uploaded file and returns a DataFrame or an error response."""
         try:
             df = pd.read_excel(file)
-            required_columns = {"matric_number", "course_code", "score"}
+            required_columns = {"matric_number", "course_code", "score", "session"}
             if not required_columns.issubset(df.columns):
                 missing_columns = required_columns - set(df.columns)
                 return Response(
@@ -51,7 +51,6 @@ class UploadResultsView(APIView):
 
     def process_results(self, df):
         """Processes the result records from the DataFrame."""
-        print("Processing results")
         created_results = []
         updated_results = []
         errors = []
@@ -76,6 +75,10 @@ class UploadResultsView(APIView):
                      Student.objects.filter(email=row["matric_number"]).first()  # Search by matric_number or email
 
             course = Course.objects.filter(code=row["course_code"]).first()  # Search by course_code
+            session_name = row.get("session")  # Get session from the row data
+
+            # Look up the session by its name
+            session = Session.objects.filter(name=session_name).first()
 
             if not student:
                 errors.append(
@@ -95,11 +98,20 @@ class UploadResultsView(APIView):
                 )
                 return
 
-            existing_result = Result.objects.filter(student=student, course=course).first()
+            if not session:
+                errors.append(
+                    {
+                        "session": session_name,
+                        "error": "Session not found.",
+                    }
+                )
+                return
+
+            existing_result = Result.objects.filter(student=student, course=course, session=session).first()
             if existing_result:
                 self.update_result(existing_result, row, updated_results)
             else:
-                self.create_result(student, course, row, created_results)
+                self.create_result(student, course, session, row, created_results)
 
         except Exception as e:
             errors.append(
@@ -115,14 +127,15 @@ class UploadResultsView(APIView):
         result.score = row["score"]
         result.status = row["status"]  # Update status from the uploaded file
         result.save()
-        updated_results.append({"student": result.student.id, "course": result.course.id})
+        updated_results.append({"student": result.student.id, "course": result.course.id, "session": result.session.id})
 
-    def create_result(self, student, course, row, created_results):
+    def create_result(self, student, course, session, row, created_results):
         """Creates a new result record."""
         Result.objects.create(
             student=student,
             course=course,
+            session=session,  # Store the session_id
             score=row["score"],
             status=row["status"],  # Use status from the uploaded file
         )
-        created_results.append({"student": student.id, "course": course.id})
+        created_results.append({"student": student.id, "course": course.id, "session": session.id})

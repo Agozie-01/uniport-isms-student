@@ -51,74 +51,80 @@
         <div class="row">
             <div class="col-12 animate__animated animate__fadeIn">
                 <div class="card">
-                    <table class="table table-hover my-0">
-                        <thead>
-                            <tr>
-                                <th>Student Name</th>
-                                <th>Matric Number</th>
-                                <th>Level</th>
-                                <th>Course Code</th>
-                                <th>Course Title</th>
-                                <th>Unit</th>
-                                <th>Score</th>
-                                <th>Grade</th>
-                                <th>GP</th>
-                                <th>QP</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <template x-for="result in results" :key="result.id">
+                    <div class="table-responsive">
+                        <table class="table table-hover my-0">
+                            <thead>
                                 <tr>
-                                    <td x-text="result.student.first_name + ' ' + result.student.last_name"></td>
-                                    <td x-text="result.student.matric_number"></td>
-                                    <td x-text="result.student.level"></td>
-                                    <td x-text="result.course.code"></td>
-                                    <td x-text="result.course.name"></td>
-                                    <td x-text="result.course.credit_units"></td>
-                                    <td x-text="result.score"></td>
-                                    <td x-text="result.grade"></td>
-                                    <td x-text="result.gp"></td>
-                                    <td x-text="result.qp"></td>
-                                    <td>
-                                        <span :class="getStatusClass(result.status)" x-text="getStatusText(result.status)"></span>
-                                    </td>
-                                    <td>
-                                        <div class="dropdown">
-                                            <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                Actions
-                                            </button>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="#"><i class="fas fa-pencil-alt"></i> Update Result</a></li>
-                                                <li><a class="dropdown-item" href="#"><i class="fas fa-trash-alt"></i> Delete</a></li>
-                                                <li><a class="dropdown-item" href="#"><i class="fas fa-ban"></i> Block</a></li>
-                                            </ul>
-                                        </div>
-                                    </td>
+                                    <th>Date</th>
+                                    <th>Student Name</th>
+                                    <th>Matric Number</th>
+                                    <th>Level</th>
+                                    <th>Course Code</th>
+                                    <th>Course Title</th>
+                                    <th>Unit</th>
+                                    <th>Score</th>
+                                    <th>Grade</th>
+                                    <th>GP</th>
+                                    <th>QP</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
                                 </tr>
-                            </template>
-
-                             <!-- Render rows dynamically -->
-                             <template x-if="loading">
-                                <tr>
-                                    <td colspan="9" class="text-center p-5">
-                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...
-                                    </td>
-                                </tr>
-                            </template>
-
-                            <!-- Empty State -->
-                            <template x-if="!loading && results.length === 0">
-                                <tr>
-                                    <td colspan="9" class="text-center p-5">
-                                        <i class="fas fa-folder-open fa-3x text-muted"></i>
-                                        <p class="mt-3 text-muted">No records found.</p>
-                                    </td>
-                                </tr>
-                            </template>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <template x-for="result in results" :key="result.id">
+                                    <tr>
+                                        <td x-text="new Date(result.created_at).toLocaleString('en-NG', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })"></td>
+                                        <td x-text="result.student.first_name + ' ' + result.student.last_name"></td>
+                                        <td x-text="result.student.matric_number"></td>
+                                        <td x-text="result.student.level"></td>
+                                        <td x-text="result.course.code"></td>
+                                        <td x-text="result.course.name"></td>
+                                        <td x-text="result.course.credit_units"></td>
+                                        <td x-text="result.score"></td>
+                                        <td x-text="result.grade"></td>
+                                        <td x-text="result.gp"></td>
+                                        <td x-text="result.qp"></td>
+                                        <td>
+                                            <span :class="getStatusClass(result.status)" x-text="getStatusText(result.status)"></span>
+                                        </td>
+                                       
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Actions
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#"><i class="fas fa-pencil-alt"></i> Update Result</a></li>
+                                                    <li><a class="dropdown-item" href="#"><i class="fas fa-trash-alt"></i> Delete</a></li>
+                                                    <li><a class="dropdown-item" href="#"><i class="fas fa-ban"></i> Block</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </template>
+                    
+                                <!-- Render rows dynamically -->
+                                <template x-if="loading">
+                                    <tr>
+                                        <td colspan="13" class="text-center p-5">
+                                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...
+                                        </td>
+                                    </tr>
+                                </template>
+                    
+                                <!-- Empty State -->
+                                <template x-if="!loading && results.length === 0">
+                                    <tr>
+                                        <td colspan="13" class="text-center p-5">
+                                            <i class="fas fa-folder-open fa-3x text-muted"></i>
+                                            <p class="mt-3 text-muted">No records found.</p>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                    
                 </div>
             </div>
         </div>
