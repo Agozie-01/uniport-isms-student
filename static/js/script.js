@@ -199,7 +199,7 @@ window.uploadStudent = function() {
           console.log("Upload errors:", this.errors);
         } else {
           toastError(
-            error?.response?.data?.error || "An unexpected error occurred.",
+            error?.data?.error || "An unexpected error occurred.",
             "center"
           );
           console.log("Error uploading student records:", error);
@@ -454,7 +454,7 @@ window.uploadSemester = function () {
           console.log("Upload errors:", this.errors);
         } else {
           toastError(
-            error?.response?.data?.error || "An unexpected error occurred.",
+            error?.data?.error || "An unexpected error occurred.",
             "center"
           );
           console.log("Error uploading semester records:", error);
@@ -530,7 +530,7 @@ window.uploadDepartment = function () {
           console.log("Upload errors:", this.errors);
         } else {
           toastError(
-            error?.response?.data?.error || "An unexpected error occurred.",
+            error?.data?.error || "An unexpected error occurred.",
             "center"
           );
           console.log("Error uploading department records:", error);
@@ -702,7 +702,7 @@ window.uploadSession = function () {
           console.log("Upload errors:", this.errors);
         } else {
           toastError(
-            error?.response?.data?.error || "An unexpected error occurred.",
+            error?.data?.error || "An unexpected error occurred.",
             "center"
           );
           console.log("Error uploading session records:", error);
@@ -1007,7 +1007,7 @@ window.uploadCourse = function () {
           console.log("Upload errors:", this.errors);
         } else {
           toastError(
-            error?.response?.data?.error || "An unexpected error occurred.",
+            error?.data?.error || "An unexpected error occurred.",
             "center"
           );
           console.log("Error uploading course records:", error);
@@ -1090,15 +1090,15 @@ window.uploadResult = function () {
         alert("Please select a file first.");
         return;
       }
-
+    
       this.loading = true;
       this.errors = []; // Clear previous errors
-
+    
       try {
         // Prepare form data
         const formData = new FormData();
         formData.append("file", this.file);
-
+    
         // Send the request
         const response = await dispatchRequest(
           "uploadResultsFromFile",
@@ -1106,45 +1106,45 @@ window.uploadResult = function () {
           `/api/results/upload`,  // Adjusted endpoint for courses
           formData
         );
-
+    
         // Check if there are any errors in the response
         if (response.errors && response.errors.length > 0) {
           this.errors = response.errors; // Capture errors from the response
           console.log("Upload errors:", this.errors);
-
+    
           // Combine all errors into a single message for display
           let errorMessage = "Some records failed to upload. Errors:\n";
           this.errors.forEach((error) => {
-            errorMessage += `${error.error} for course ${error.code || "unknown"}\n`;
+            errorMessage += `${error.error} for course ${error.course_code || "unknown"}\n`;
           });
-
+    
           // Show the error message
           toastError(errorMessage, "right");
+    
+          // Exit the function if there are errors
+          return; // Skip success handling if errors exist
         }
-
+    
         // If no errors, show success message
-        if (!this.errors.length) {
-          toastSuccess("Course records uploaded successfully!", "center", () => {
-            this.loading = false;
-          });
-        }
-
+        toastSuccess("Course records uploaded successfully!", "center", () => {
+          this.loading = false;
+        });
+    
       } catch (error) {
-        // Check if server sent specific error messages
+        // Handle unexpected errors
         if (error.response && error.response.data && error.response.data.errors) {
-          this.errors = error.response.data.errors; // Capture errors from server response
-          console.log("Upload errors:", this.errors);
+          this.errors = error.response.data.errors; 
         } else {
           toastError(
-            error?.response?.data?.error || "An unexpected error occurred.",
+            error?.data?.error || "An unexpected error occurred.",
             "center"
           );
-          console.log("Error uploading course records:", error);
         }
       } finally {
         this.loading = false;
       }
-    },
+    }
+    ,
   };
 };
 

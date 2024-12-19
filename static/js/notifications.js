@@ -28,7 +28,7 @@ function toastError(message, position, callback) {
 
     Toastify({
         text: message,
-        duration: 3000,
+        duration: 5000,
         newWindow: false,
         close: true,
         gravity: "top", // `top` or `bottom`

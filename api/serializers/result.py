@@ -12,6 +12,7 @@ class ResultSerializer(serializers.ModelSerializer):
         model = Result
         fields = [
             'id',
+            'status',
             'student',
             'course',
             'score',

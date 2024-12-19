@@ -54,6 +54,9 @@
                     <table class="table table-hover my-0">
                         <thead>
                             <tr>
+                                <th>Student Name</th>
+                                <th>Matric Number</th>
+                                <th>Level</th>
                                 <th>Course Code</th>
                                 <th>Course Title</th>
                                 <th>Unit</th>
@@ -68,6 +71,9 @@
                         <tbody>
                             <template x-for="result in results" :key="result.id">
                                 <tr>
+                                    <td x-text="result.student.first_name + ' ' + result.student.last_name"></td>
+                                    <td x-text="result.student.matric_number"></td>
+                                    <td x-text="result.student.level"></td>
                                     <td x-text="result.course.code"></td>
                                     <td x-text="result.course.name"></td>
                                     <td x-text="result.course.credit_units"></td>
@@ -75,7 +81,9 @@
                                     <td x-text="result.grade"></td>
                                     <td x-text="result.gp"></td>
                                     <td x-text="result.qp"></td>
-                                    <td x-text="result.status"></td>
+                                    <td>
+                                        <span :class="getStatusClass(result.status)" x-text="getStatusText(result.status)"></span>
+                                    </td>
                                     <td>
                                         <div class="dropdown">
                                             <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">

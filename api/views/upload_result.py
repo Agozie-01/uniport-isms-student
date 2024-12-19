@@ -34,13 +34,17 @@ class UploadResultsView(APIView):
         """Reads the uploaded file and returns a DataFrame or an error response."""
         try:
             df = pd.read_excel(file)
-            required_columns = {"student_id", "course_id", "score"}
+            required_columns = {"matric_number", "course_code", "score"}
             if not required_columns.issubset(df.columns):
                 missing_columns = required_columns - set(df.columns)
                 return Response(
                     {"error": f"Missing required columns: {missing_columns}"},
                     status=status.HTTP_400_BAD_REQUEST
                 )
+            
+            # Ensure 'status' column exists or add it with default 'pending'
+            if 'status' not in df.columns:
+                df['status'] = 'pending'  # Default status if missing
             return df
         except Exception as e:
             return Response({"error": f"Error reading file: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
@@ -68,13 +72,15 @@ class UploadResultsView(APIView):
     def process_result_row(self, row, created_results, updated_results, errors):
         """Processes a single row of the DataFrame."""
         try:
-            student = Student.objects.filter(id=row["student_id"]).first()
-            course = Course.objects.filter(id=row["course_id"]).first()
+            student = Student.objects.filter(matric_number=row["matric_number"]).first() or \
+                     Student.objects.filter(email=row["matric_number"]).first()  # Search by matric_number or email
+
+            course = Course.objects.filter(code=row["course_code"]).first()  # Search by course_code
 
             if not student:
                 errors.append(
                     {
-                        "student_id": row["student_id"],
+                        "matric_number": row["matric_number"],
                         "error": "Student not found.",
                     }
                 )
@@ -83,7 +89,7 @@ class UploadResultsView(APIView):
             if not course:
                 errors.append(
                     {
-                        "course_id": row["course_id"],
+                        "course_code": row["course_code"],
                         "error": "Course not found.",
                     }
                 )
@@ -98,8 +104,8 @@ class UploadResultsView(APIView):
         except Exception as e:
             errors.append(
                 {
-                    "student_id": row.get("student_id"),
-                    "course_id": row.get("course_id"),
+                    "matric_number": row.get("matric_number"),
+                    "course_code": row.get("course_code"),
                     "error": f"Error processing record: {str(e)}",
                 }
             )
@@ -107,6 +113,7 @@ class UploadResultsView(APIView):
     def update_result(self, result, row, updated_results):
         """Updates an existing result record."""
         result.score = row["score"]
+        result.status = row["status"]  # Update status from the uploaded file
         result.save()
         updated_results.append({"student": result.student.id, "course": result.course.id})
 
@@ -116,5 +123,6 @@ class UploadResultsView(APIView):
             student=student,
             course=course,
             score=row["score"],
+            status=row["status"],  # Use status from the uploaded file
         )
         created_results.append({"student": student.id, "course": course.id})

@@ -69,7 +69,11 @@
     --mdb-btn-group-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     box-shadow: var(--mdb-btn-box-shadow);
     transition: var(--mdb-btn-group-transition);
-  }
+}
+
+.text-review {
+    color: #fd7e14; 
+}
 
 @media (min-width: 992px) {
     .content {

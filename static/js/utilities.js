@@ -261,3 +261,33 @@ function formatTime(timestamp) {
 }
 
 
+window.getStatusClass = function(status) {
+  switch (status) {
+      case 'approved':
+          return 'text-success'; // Green color for approved
+      case 'rejected':
+          return 'text-danger'; // Red color for rejected
+      case 'pending':
+          return 'text-warning'; // Yellow color for pending
+      case 'review':
+          return 'text-review'; // Blue color for under review
+      default:
+          return 'text-muted'; // Default muted color for unknown status
+  }
+}
+
+window.getStatusText = function(status) {
+  switch (status) {
+      case 'approved':
+          return 'Approved';
+      case 'rejected':
+          return 'Rejected';
+      case 'pending':
+          return 'Pending';
+      case 'review':
+          return 'Under Review';
+      default:
+          return 'Unknown';
+  }
+}
+

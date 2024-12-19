@@ -3,14 +3,25 @@ from .course import Course
 from .student import Student
 from decimal import Decimal, InvalidOperation
 
-
 class Result(models.Model):
+    APPROVAL_STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+        ('review', 'Under Review'),
+    ]
+    
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="results")
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="results")
     score = models.DecimalField(max_digits=5, decimal_places=2)  # Supports scores like 89.5
     grade = models.CharField(max_length=2)  # e.g., "A", "B", etc.
     gp = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, default=0)  # Grade point (e.g., 4.00)
     qp = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True, default=0)  # Quality points
+    status = models.CharField(
+        max_length=10,
+        choices=APPROVAL_STATUS_CHOICES,
+        default='pending',  # Default status when a result is first created
+    )
     created_at = models.DateTimeField(auto_now_add=True)  # Tracks when the record is created
     updated_at = models.DateTimeField(auto_now=True)  # Tracks when the record is last updated
 
@@ -67,7 +78,7 @@ class Result(models.Model):
         return grade_mapping.get(grade_point, "F")
 
     def __str__(self):
-        return f"{self.student} - {self.course} - {self.score}"
+        return f"{self.student} - {self.course} - {self.score} - {self.get_status_display()}"
 
     class Meta:
         db_table = "results"
