@@ -110,7 +110,7 @@ async function getRequest(url, headers = {}) {
   }
 }
 
-async function postRequest(url, data, headers = {}) {
+/* async function postRequest(url, data, headers = {}) {
   try {
     let body;
     let isFormData = false;
@@ -143,8 +143,53 @@ async function postRequest(url, data, headers = {}) {
     }
     throw error;
   }
-}
+} */
 
+  async function postRequest(url, data, headers = {}) {
+    try {
+      let body;
+      let isFormData = false;
+  
+      // Check if data is an instance of FormData (for file uploads)
+      if (data instanceof FormData) {
+        body = data;
+        isFormData = true;
+      } else {
+        // Otherwise, assume JSON
+        body = JSON.stringify(data);
+        headers["Content-Type"] = "application/json"; // Set Content-Type for JSON
+      }
+  
+      const response = await fetch(url, {
+        method: "POST",
+        headers: isFormData ? headers : { ...headers }, // Do not set Content-Type for FormData
+        body,
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw { status: response.status, data: errorData };
+      }
+  
+      // Check if the content type is an Excel file (XLSX)
+      const contentType = response.headers.get("Content-Type");
+  
+      if (contentType && contentType.includes("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
+        // Return the response as a Blob (for file handling)
+        return await response.blob();
+      }
+  
+      // If the content type is JSON, parse and return the response as JSON
+      return await response.json();
+  
+    } catch (error) {
+      if (error instanceof SyntaxError) {
+        console.error("Error parsing JSON response:", error);
+      }
+      throw error;
+    }
+}
+  
 
 async function putRequest(url, data, headers = {}) {
   try {
@@ -230,8 +275,6 @@ async function dispatchRequest(key, method, url, data = null, persist = true, fa
 
     return response; // Return the original response as is
   } catch (error) {
-    console.error(`Request failed for key "${key}":`, error);
-
     // Fallback to old data if enabled
     if (fallback && key) {
       const oldData = DataStore.get(key);

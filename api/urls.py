@@ -37,7 +37,8 @@ urlpatterns = [
     re_path(r'^students/?$', StudentView.as_view(), name='students'),  # Optional trailing slash
     re_path(r'^students/(?P<student_id>\d+)/?$', StudentView.as_view(), name='student_detail'),  # Optional trailing slash
     re_path(r"^students/upload/?$", UploadStudentsView.as_view(), name="upload_students"),
-
+    re_path(r"^^students/(?P<student_id>\d+)/spreadsheet/?$", GenerateSpreadsheetView.as_view(), name="generate_spreadsheet"),
+    
     # Admin endpoints
     re_path(r'^admins/?$', AdminView.as_view(), name='admin_new'),  # Optional trailing slash
     re_path(r'^admins/(?P<admin_id>\d+)/?$', AdminView.as_view(), name='admin_detail'),
@@ -72,6 +73,5 @@ urlpatterns = [
 
     # Result Management
     re_path(r"^results/?$", ResultView.as_view(), name="results"),
-    re_path(r"^^results/spreadsheet/(?P<student_id>\d+)/?$", GenerateSpreadsheetView.as_view(), name="generate_spreadsheet"),
     re_path(r"^results/upload/?$", UploadResultsView.as_view(), name="upload_results"),
 ]

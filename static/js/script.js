@@ -82,9 +82,14 @@ window.userDetails = function() {
               this.user = user;
 
           } catch (error) {
-              // Display an alert with a more descriptive error message
-              console.error("Error fetching user details:", error);
-              alert("Failed to load user details. Please try again.");
+            toastError(
+             "Your session has expired due to inactivity. You will be logged out.",
+              "center"
+            );
+
+            setTimeout(function() {
+              window.location.href = "/";
+            }, 5000);
           }
       }
   };
@@ -98,6 +103,48 @@ window.studentList = function() {
     page: 1, // Current page for pagination
     totalPages: 1, // Total number of pages for pagination
     loading: false,
+
+    async generateSpreadsheet(id) {
+      this.loading = true;  // Show loading indicator
+      try {
+  
+    
+        // Send the POST request to the backend to generate the spreadsheet
+        const response = await dispatchRequest(
+          "generateResult",
+          "POST",
+          `/api/students/${id}/spreadsheet`,
+          false
+        );
+    
+        // Check if the response is OK and if the content type is Excel
+        // Create a Blob from the response
+        const blob = await response.blob();
+          
+        // Create a URL for the Blob and trigger download
+        const downloadUrl = URL.createObjectURL(blob);
+        
+        // Create a temporary anchor element to trigger the download
+        const a = document.createElement("a");
+        a.href = downloadUrl;
+        a.download = `student_${id}_results.xlsx`;  // Name the file for download
+        document.body.appendChild(a);
+        a.click();  // Programmatically trigger the download
+        document.body.removeChild(a);  // Clean up the DOM
+  
+        // Clean up the Blob URL
+        URL.revokeObjectURL(downloadUrl);
+        
+      } catch (error) {
+        // Handle errors and show an error message to the user
+        this.loading = false;
+        console.error("Error generating spreadsheet:", error);
+        toastError(`Error generating spreadsheet: ${error.message || "Unexpected error"}`, "center");
+      } finally {
+        // Ensure loading state is reset
+        this.loading = false;
+      }
+    },    
 
     // Method to fetch student records
     async fetchRecords() {
@@ -189,6 +236,7 @@ window.uploadStudent = function() {
         if (!this.errors.length) {
           toastSuccess("Student records uploaded successfully!", "center", () => {
             this.loading = false;
+            location.reload(true);
           });
         }
 
@@ -444,6 +492,7 @@ window.uploadSemester = function () {
         if (!this.errors.length) {
           toastSuccess("Semester records uploaded successfully!", "center", () => {
             this.loading = false;
+            location.reload(true);
           });
         }
 
@@ -520,6 +569,7 @@ window.uploadDepartment = function () {
         if (!this.errors.length) {
           toastSuccess("Department records uploaded successfully!", "center", () => {
             this.loading = false;
+            location.reload(true);
           });
         }
 
@@ -692,6 +742,7 @@ window.uploadSession = function () {
         if (!this.errors.length) {
           toastSuccess("Session records uploaded successfully!", "center", () => {
             this.loading = false;
+            location.reload(true);
           });
         }
 
@@ -997,6 +1048,7 @@ window.uploadCourse = function () {
         if (!this.errors.length) {
           toastSuccess("Course records uploaded successfully!", "center", () => {
             this.loading = false;
+            location.reload(true);
           });
         }
 
@@ -1128,7 +1180,10 @@ window.uploadResult = function () {
         // If no errors, show success message
         toastSuccess("Course records uploaded successfully!", "center", () => {
           this.loading = false;
+          location.reload(true);
         });
+
+        
     
       } catch (error) {
         // Handle unexpected errors
