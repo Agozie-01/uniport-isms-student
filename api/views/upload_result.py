@@ -13,11 +13,10 @@ COLUMN_MAP = {
     "name": "name",
     "course code": "course_code",
     "total score": "score",
-    "session": "session",
 }
 
 # Required columns after mapping
-REQUIRED_COLUMNS = {"matric_number", "score", "session"}
+REQUIRED_COLUMNS = {"matric_number", "score"}
 
 class UploadResultsView(APIView):
     """
@@ -29,24 +28,33 @@ class UploadResultsView(APIView):
     def post(self, request):
         file = request.FILES.get("file")
         course_code = request.data.get("course")  # Capture course from request
+        session_name = request.data.get("session")  # Capture session from request
 
         if not file:
             return Response({"error": "No file provided"}, status=status.HTTP_400_BAD_REQUEST)
         
         if not course_code:
             return Response({"error": "Course is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if not session_name:
+            return Response({"error": "Session is required"}, status=status.HTTP_400_BAD_REQUEST)
 
         # Validate course exists
         course = Course.objects.filter(code=course_code).first()
         if not course:
             return Response({"error": "Invalid course selected"}, status=status.HTTP_400_BAD_REQUEST)
 
+        # Validate session exists
+        session = Session.objects.filter(name=session_name).first()
+        if not session:
+            return Response({"error": "Invalid session selected"}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
             df = self.read_file(file)
             if isinstance(df, Response):
                 return df  # If read_file returns an error response, return it
 
-            return self.process_results(df, course)
+            return self.process_results(df, course, session)
 
         except Exception as e:
             return Response({"error": f"Error processing file: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -103,15 +111,14 @@ class UploadResultsView(APIView):
         except Exception as e:
             return Response({"error": f"Error reading file: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
-
-    def process_results(self, df, course):
+    def process_results(self, df, course, session):
         """Processes the result records from the DataFrame."""
         created_results = []
         updated_results = []
         errors = []
 
         for _, row in df.iterrows():
-            self.process_result_row(row, course, created_results, updated_results, errors)
+            self.process_result_row(row, course, session, created_results, updated_results, errors)
 
         return Response(
             {
@@ -123,21 +130,14 @@ class UploadResultsView(APIView):
             status=status.HTTP_200_OK,
         )
 
-    def process_result_row(self, row, course, created_results, updated_results, errors):
+    def process_result_row(self, row, course, session, created_results, updated_results, errors):
         """Processes a single row of the DataFrame."""
         try:
             student = Student.objects.filter(matric_number=row["matric_number"]).first() or \
-                     Student.objects.filter(email=row["matric_number"]).first() 
-
-            session_name = row.get("session")
-            session = Session.objects.filter(name=session_name).first()
+                     Student.objects.filter(email=row["matric_number"]).first()
 
             if not student:
                 errors.append({"matric_number": row["matric_number"], "error": "Student not found."})
-                return
-
-            if not session:
-                errors.append({"session": session_name, "error": "Session not found."})
                 return
 
             existing_result = Result.objects.filter(student=student, course=course, session=session).first()

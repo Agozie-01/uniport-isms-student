@@ -13,12 +13,9 @@ pyinstaller manage_webview.py --name ISMS --icon=assets/logo.ico --hidden-import
 *** If you have the spec file generated, use the command below instead of the ones above ***
 pyinstaller ISMS.spec --noconfirm --noconsole
 
-# .env file
-DB_ENGINE=django.db.backends.mysql
-DB_NAME=isms_db_prod
-DB_USER=admin_isms
-DB_PASSWORD="@193isMS"
-DB_HOST=mysql.bittopay.ng
-DB_PORT=3306
+
+
+
+
 
 

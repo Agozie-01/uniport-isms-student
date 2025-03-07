@@ -1130,6 +1130,7 @@ window.uploadResult = function () {
     loading: false,
     file: null,
     course: "", // Store selected course
+    session: "", // Store selected session
     errors: [], // To store error messages
 
     // Handle file change (on file selection)
@@ -1142,10 +1143,20 @@ window.uploadResult = function () {
       this.course = event.target.value;
     },
 
+    // Handle session selection
+    handleSessionChange(event) {
+      this.session = event.target.value;
+    },
+
     // Method to upload course records from the Excel file
     async uploadFile() {
       if (!this.course) {
         toastError("Please select a course before uploading.", "center");
+        return;
+      }
+
+      if (!this.session) {
+        toastError("Please select a session before uploading.", "center");
         return;
       }
 
@@ -1161,6 +1172,7 @@ window.uploadResult = function () {
         // Prepare form data
         const formData = new FormData();
         formData.append("file", this.file);
+        formData.append("session", this.session);
         formData.append("course", this.course); // Include selected course
 
         // Send the request
