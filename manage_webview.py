@@ -9,7 +9,7 @@ from django.core.management import execute_from_command_line
 
 def start_django_server():
     """Start Django server."""
-    sys.argv = [sys.argv[0], "runserver", "127.0.0.1:12000", "--noreload"]
+    sys.argv = [sys.argv[0], "runserver", "127.0.0.1:13000", "--noreload"]
     execute_from_command_line(sys.argv)
 
 def main():
@@ -24,7 +24,7 @@ def main():
     time.sleep(1)  # Adjust this delay if needed for server readiness
 
     # Open the application in a PyWebView window; when this window is closed, the app exits
-    webview.create_window("ISMS", "http://127.0.0.1:12000")
+    webview.create_window("ISMS", "http://127.0.0.1:13000")
     webview.start()  # Blocks until the window is closed, then exits
 
 if __name__ == '__main__':

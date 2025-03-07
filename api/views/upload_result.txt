@@ -54,38 +54,12 @@ class UploadResultsView(APIView):
     def read_file(self, file):
         """Reads the uploaded file and returns a DataFrame or an error response."""
         try:
-            df = pd.read_excel(file, header=None)  # Read without assuming headers
+            df = pd.read_excel(file)
             
-            # Identify the row containing 'mat no' or its variations
-            matric_variants = {"matric_no", "matric no", "matric_number", "mat no"}
-            header_row_index = None
-
-            for i, row in df.iterrows():
-                row_values = [str(val).strip().lower() for val in row.fillna("")]
-                if any(col in row_values for col in matric_variants):
-                    header_row_index = i
-                    break
-
-            if header_row_index is None:
-                return Response(
-                    {"error": "Could not detect header row with 'matric number' column."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-            # Set the detected row as the header
-            df.columns = df.iloc[header_row_index]
-            df = df[header_row_index + 1:].reset_index(drop=True)
-
-            # Normalize column names
+            # Normalize column names (strip spaces, convert to lowercase)
             df.columns = [col.strip().lower() for col in df.columns]
-
-            # Rename variations of 'matric_number' to a standard format
-            for col in df.columns:
-                if col in matric_variants:
-                    df.rename(columns={col: "matric_number"}, inplace=True)
-                    break  # Stop once a match is found
-
-            # Rename columns using predefined mapping
+            
+            # Rename columns using the mapping
             df.rename(columns=COLUMN_MAP, inplace=True)
 
             # Validate required columns
@@ -93,16 +67,15 @@ class UploadResultsView(APIView):
             if missing_required:
                 return Response(
                     {"error": f"Missing required columns: {missing_required}"},
-                    status=status.HTTP_400_BAD_REQUEST,
+                    status=status.HTTP_400_BAD_REQUEST
                 )
 
-            if "status" not in df.columns:
-                df["status"] = "pending"  # Default status if missing
+            if 'status' not in df.columns:
+                df['status'] = 'pending'  # Default status if missing
 
             return df
         except Exception as e:
             return Response({"error": f"Error reading file: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
-
 
     def process_results(self, df, course):
         """Processes the result records from the DataFrame."""

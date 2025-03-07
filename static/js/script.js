@@ -1129,6 +1129,7 @@ window.uploadResult = function () {
   return {
     loading: false,
     file: null,
+    course: "", // Store selected course
     errors: [], // To store error messages
 
     // Handle file change (on file selection)
@@ -1136,59 +1137,68 @@ window.uploadResult = function () {
       this.file = event.target.files[0];
     },
 
+    // Handle course selection
+    handleCourseChange(event) {
+      this.course = event.target.value;
+    },
+
     // Method to upload course records from the Excel file
     async uploadFile() {
-      if (!this.file) {
-        alert("Please select a file first.");
+      if (!this.course) {
+        toastError("Please select a course before uploading.", "center");
         return;
       }
-    
+
+      if (!this.file) {
+        toastError("Please select a file before uploading.", "center");
+        return;
+      }
+
       this.loading = true;
       this.errors = []; // Clear previous errors
-    
+
       try {
         // Prepare form data
         const formData = new FormData();
         formData.append("file", this.file);
-    
+        formData.append("course", this.course); // Include selected course
+
         // Send the request
         const response = await dispatchRequest(
           "uploadResultsFromFile",
           "POST",
-          `/api/results/upload`,  // Adjusted endpoint for courses
+          `/api/results/upload`, // Adjusted endpoint for courses
           formData
         );
-    
+
         // Check if there are any errors in the response
         if (response.errors && response.errors.length > 0) {
           this.errors = response.errors; // Capture errors from the response
           console.log("Upload errors:", this.errors);
-    
+
           // Combine all errors into a single message for display
           let errorMessage = "Some records failed to upload. Errors:\n";
           this.errors.forEach((error) => {
             errorMessage += `${error.error} for course ${error.course_code || "unknown"}\n`;
           });
-    
+
           // Show the error message
           toastError(errorMessage, "right");
-    
+
           // Exit the function if there are errors
           return; // Skip success handling if errors exist
         }
-    
+
         // If no errors, show success message
         toastSuccess("Course records uploaded successfully!", "center", () => {
           this.loading = false;
           location.reload(true);
         });
 
-        
-    
       } catch (error) {
         // Handle unexpected errors
         if (error.response && error.response.data && error.response.data.errors) {
-          this.errors = error.response.data.errors; 
+          this.errors = error.response.data.errors;
         } else {
           toastError(
             error?.data?.error || "An unexpected error occurred.",
@@ -1198,8 +1208,8 @@ window.uploadResult = function () {
       } finally {
         this.loading = false;
       }
-    }
-    ,
+    },
   };
 };
+
 

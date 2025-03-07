@@ -9,23 +9,42 @@
             <div class="modal-body">
                 <!-- Upload Form -->
                 <form @submit.prevent="uploadFile" enctype="multipart/form-data">
+                    
+                    <!-- Course Title Dropdown -->
                     <div class="mb-3">
-                        <label for="bulkFile" class="form-label">Upload File</label>
-                        <input 
-                            class="form-control" 
-                            type="file" 
-                            id="bulkFile" 
-                            x-ref="fileInput" 
-                            @change="handleFileChange" 
-                            required 
-                        />
+                        <label for="courseTitle" class="form-label">Select Course</label>
+                        <select id="courseTitle" class="form-select" x-model="course" @change="handleCourseChange" required>
+                            <option value="">Choose a course...</option>
+                            <option value="CS104">Mathematics</option>
+                            <option value="CS101">Science</option>
+                            <option value="history">History</option>
+                            <option value="english">English</option>
+                        </select>
+                    </div>
+
+                    <!-- Fancy File Upload -->
+                    <div class="mb-3">
+                        <label for="bulkFile" class="form-label">Upload Results File</label>
+                        <div class="file-upload">
+                            <input 
+                                type="file" 
+                                id="bulkFile" 
+                                class="form-control d-none"
+                                x-ref="fileInput" 
+                                @change="handleFileChange"
+                                required 
+                            />
+                            <label for="bulkFile" class="btn btn-outline-primary w-100">
+                                <span x-text="file ? file.name : 'Choose File'"></span>
+                            </label>
+                        </div>
                     </div>
 
                     <!-- Upload Button with Loading Spinner -->
-                    <button type="submit" class="btn btn-secondary" :disabled="loading">
+                    <button type="submit" class="btn btn-secondary w-100" :disabled="loading">
                         <span x-show="!loading">Upload</span>
                         <span x-show="loading">
-                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Uploading...
+                            <span class="spinner-border spinner-border-sm" role="status"></span> Uploading...
                         </span>
                     </button>
                 </form>
@@ -33,3 +52,16 @@
         </div>
     </div>
 </div>
+
+<style>
+.file-upload label {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border: 2px dashed #007bff;
+    border-radius: 5px;
+    text-align: center;
+}
+</style>
