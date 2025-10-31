@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard | Uniport IUMS</title>
+
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+            background-color: #f4f6fc;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: #0a1833;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+        }
+
+        .sidebar .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar .logo img {
+            width: 80px;
+            height: 80px;
+        }
+
+        .sidebar h4 {
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .nav-links li {
+            padding: 12px 20px;
+        }
+
+        .nav-links li a {
+            text-decoration: none;
+            color: #b0b9c6;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links li a:hover,
+        .nav-links li.active a {
+            color: #fff;
+            background-color: #1a294b;
+            border-radius: 5px;
+        }
+
+        .nav-links i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        /* Main content */
+        .main-content {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .topbar h2 {
+            font-weight: 600;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .card-box {
+            background: #fff;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease;
+        }
+
+        .card-box:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-box h5 {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .card-box h2 {
+            color: #002b7f;
+            margin: 0;
+        }
+
+        /* Chart and table */
+        .chart-section {
+            margin-top: 40px;
+        }
+
+        canvas {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            width: 100%;
+        }
+
+        .results-section {
+            margin-top: 40px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+        }
+
+        .results-section h4 {
+            font-weight: 600;
+            color: #002b7f;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: #002b7f;
+            color: #fff;
+            padding: 10px;
+            text-align: left;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        /* Grade badge colors */
+        .grade-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .grade-a { background-color: #d4edda; color: #155724; }
+        .grade-b { background-color: #cce5ff; color: #004085; }
+        .grade-c { background-color: #fff3cd; color: #856404; }
+        .grade-d { background-color: #ffeeba; color: #856404; }
+        .grade-e { background-color: #f8d7da; color: #721c24; }
+        .grade-f { background-color: #f5c6cb; color: #721c24; }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            color: #777;
+            font-size: 14px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <img src="https://www.uniport.edu.ng/templates/uniport_v3/images/logo.png" alt="Uniport Logo">
+            <h4>UNIPORT IUMS</h4>
+        </div>
+        <ul class="nav-links">
+            <li class="active"><a href="#"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+            <li><a href="#"><i class="bi bi-book"></i> Results</a></li>
+            <li><a href="#"><i class="bi bi-people"></i> Courses</a></li>
+            <li><a href="#"><i class="bi bi-building"></i> Department</a></li>
+            <li><a href="#"><i class="bi bi-calendar"></i> Sessions</a></li>
+            <li><a href="#"><i class="bi bi-person-circle"></i> Profile</a></li>
+            <li><a href="#"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Main -->
+    <div class="main-content">
+        <div class="topbar">
+            <h2>Welcome, {{ student_name }} 👋</h2>
+            <div>
+                <i class="bi bi-bell fs-4"></i>
+                <i class="bi bi-chat-left-text fs-4 ms-3"></i>
+            </div>
+        </div>
+
+        <!-- Dashboard Cards -->
+        <div class="cards">
+            <div class="card-box">
+                <h5>Total Courses</h5>
+                <h2>{{ total_courses }}</h2>
+            </div>
+            <div class="card-box">
+                <h5>Results Uploaded</h5>
+                <h2>{{ results_uploaded }}</h2>
+            </div>
+            <div class="card-box">
+                <h5>Average Grade</h5>
+                <h2>{{ average_grade }}</h2>
+            </div>
+            <div class="card-box">
+                <h5>Status</h5>
+                <h2>{{ status }}</h2>
+            </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="chart-section">
+            <canvas id="performanceChart" height="120"></canvas>
+        </div>
+
+        <!-- Recent Results Table -->
+        <div class="results-section">
+            <h4>📊 Recent Results</h4>
+            {% if recent_results %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Course Code</th>
+                        <th>Course Title</th>
+                        <th>Score</th>
+                        <th>Grade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in recent_results %}
+                    <tr>
+                        <td>{{ result.course.code }}</td>
+                        <td>{{ result.course.title }}</td>
+                        <td>{{ result.score }}</td>
+                        <td>
+                            {% if result.score >= 70 %}
+                                <span class="grade-badge grade-a">A</span>
+                            {% elif result.score >= 60 %}
+                                <span class="grade-badge grade-b">B</span>
+                            {% elif result.score >= 50 %}
+                                <span class="grade-badge grade-c">C</span>
+                            {% elif result.score >= 45 %}
+                                <span class="grade-badge grade-d">D</span>
+                            {% elif result.score >= 40 %}
+                                <span class="grade-badge grade-e">E</span>
+                            {% else %}
+                                <span class="grade-badge grade-f">F</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <p class="text-muted">No results uploaded yet.</p>
+            {% endif %}
+        </div>
+
+        <footer>
+            &copy; {{ now|date:"Y" }} University of Port Harcourt — Integrated University Management System
+        </footer>
+    </div>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('performanceChart');
+        const labels = {{ course_labels|safe }};
+        const scores = {{ course_scores|safe }};
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels.length > 0 ? labels : ['No Data'],
+                datasets: [{
+                    label: 'Course Performance Trend',
+                    data: scores.length > 0 ? scores : [0],
+                    borderColor: '#002b7f',
+                    backgroundColor: 'rgba(0, 43, 127, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#002b7f',
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: true, position: 'bottom' },
+                    tooltip: { enabled: true }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Score' },
+                        grid: { color: 'rgba(0,0,0,0.05)' }
+                    },
+                    x: {
+                        grid: { color: 'rgba(0,0,0,0.05)' }
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -21,4 +21,7 @@ urlpatterns = [
     path('secadmin/', admin.site.urls),
     path('', include('adminapp.urls')),
     path('api/', include('api.urls')),
+
+    #this line is for the new student interface
+    path('student/', include('studentapp.urls')),
 ]

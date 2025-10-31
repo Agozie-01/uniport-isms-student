@@ -79,10 +79,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'adminapp',
     'api',
+    'studentapp',
     'channels',
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -125,14 +127,11 @@ WSGI_APPLICATION = 'isms.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv('DB_ENGINE'),   # Fetch the engine from .env
-        'NAME': os.getenv('DB_NAME'),       # Fetch the database name from .env
-        'USER': os.getenv('DB_USER'),       # Fetch the user from .env
-        'PASSWORD': os.getenv('DB_PASSWORD', ''),  # Optional: default to empty if not set
-        'HOST': os.getenv('DB_HOST'),       # Fetch the host from .env
-        'PORT': os.getenv('DB_PORT', '3306'),  # Default to 3306 if not set
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

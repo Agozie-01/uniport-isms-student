@@ -1,0 +1,181 @@
+Folder PATH listing
+Volume serial number is A69C-B886
+C:.
+³   .env.sqdddd
+³   .env.sqlite
+³   .gitignore
+³   manage.py
+³   manage_webview.py
+³   README.md
+³   requirements.txt
+³   structure.txt
+³   
+ÃÄÄÄadminapp
+³   ³   admin.py
+³   ³   apps.py
+³   ³   context_processors.py
+³   ³   models.py
+³   ³   tests.py
+³   ³   urls.py
+³   ³   __init__.py
+³   ³   
+³   ÃÄÄÄtemplates
+³   ³   ³   auth_base.html
+³   ³   ³   base.html
+³   ³   ³   
+³   ³   ÃÄÄÄcomponents
+³   ³   ³       add_course_modal.html
+³   ³   ³       add_department_modal.html
+³   ³   ³       add_semester_modal.html
+³   ³   ³       add_session_modal.html
+³   ³   ³       add_student_modal.html
+³   ³   ³       edit_student_modal.html
+³   ³   ³       performance_chart_script.html
+³   ³   ³       recent_activities.html
+³   ³   ³       scripts.html
+³   ³   ³       styles.html
+³   ³   ³       upload_course_modal.html
+³   ³   ³       upload_department_modal.html
+³   ³   ³       upload_results_modal.html
+³   ³   ³       upload_semester_modal.html
+³   ³   ³       upload_session_modal.html
+³   ³   ³       upload_student_modal.html
+³   ³   ³       
+³   ³   ÃÄÄÄlayout
+³   ³   ³       footer.html
+³   ³   ³       header.html
+³   ³   ³       navigation.html
+³   ³   ³       sidebar.html
+³   ³   ³       
+³   ³   ÀÄÄÄpages
+³   ³           courses.html
+³   ³           departments.html
+³   ³           index.html
+³   ³           login.html
+³   ³           results.html
+³   ³           semesters.html
+³   ³           sessions.html
+³   ³           students.html
+³   ³           
+³   ÀÄÄÄviews
+³           auth_views.py
+³           dashboard_views.py
+³           __init__.py
+³           
+ÃÄÄÄapi
+³   ³   admin.py
+³   ³   apps.py
+³   ³   mixins.py
+³   ³   tests.py
+³   ³   urls.py
+³   ³   __init__.py
+³   ³   
+³   ÃÄÄÄmiddleware
+³   ³       activity_logger.py
+³   ³       common.py
+³   ³       __init__.py
+³   ³       
+³   ÃÄÄÄmodels
+³   ³       activity_log.py
+³   ³       admin.py
+³   ³       course.py
+³   ³       department.py
+³   ³       result.py
+³   ³       semester.py
+³   ³       session.py
+³   ³       student.py
+³   ³       test.py
+³   ³       __init__.py
+³   ³       
+³   ÃÄÄÄserializers
+³   ³       admin.py
+³   ³       course.py
+³   ³       department.py
+³   ³       result.py
+³   ³       semester.py
+³   ³       session.py
+³   ³       student.py
+³   ³       __init__.py
+³   ³       
+³   ÃÄÄÄutils
+³   ³       activity_logger.py
+³   ³       __init__.py
+³   ³       
+³   ÀÄÄÄviews
+³           admin.py
+³           course.py
+³           course_performance_trend.py
+³           current_user.py
+³           dashboard_stats.py
+³           department.py
+³           generate_spreadsheet.py
+³           recent_activity.py
+³           result.py
+³           semester.py
+³           session.py
+³           student.py
+³           upload_course.py
+³           upload_department.py
+³           upload_result.py
+³           upload_result.txt
+³           upload_result_original.txt
+³           upload_semester.py
+³           upload_session.py
+³           upload_student.py
+³           __init__.py
+³           
+ÃÄÄÄassets
+³       logo.ico
+³       
+ÃÄÄÄisms
+³       asgi.py
+³       settings.py
+³       urls.py
+³       wsgi.py
+³       __init__.py
+³       
+ÃÄÄÄstatic
+³   ÃÄÄÄcss
+³   ³       app.css
+³   ³       app.css.map
+³   ³       style.css
+³   ³       
+³   ÃÄÄÄfonts
+³   ³       .gitkeep
+³   ³       
+³   ÃÄÄÄimg
+³   ³   ³   logo.png
+³   ³   ³   
+³   ³   ÃÄÄÄavatars
+³   ³   ³       avatar-2.jpg
+³   ³   ³       avatar-3.jpg
+³   ³   ³       avatar-4.jpg
+³   ³   ³       avatar-5.jpg
+³   ³   ³       avatar.jpg
+³   ³   ³       
+³   ³   ÃÄÄÄicons
+³   ³   ³       icon-48x48.png
+³   ³   ³       
+³   ³   ÀÄÄÄphotos
+³   ³           unsplash-1.jpg
+³   ³           unsplash-2.jpg
+³   ³           unsplash-3.jpg
+³   ³           
+³   ÀÄÄÄjs
+³           app.js
+³           app.js.LICENSE.txt
+³           app.js.map
+³           auth.js
+³           notifications.js
+³           script.js
+³           store.js
+³           utilities.js
+³           
+ÀÄÄÄtemplates
+        courses_template.xlsx
+        departments_template.xlsx
+        results_template.xlsx
+        semesters_template.xlsx
+        sessions_template.xlsx
+        students_template.xlsx
+        
